@@ -1,0 +1,119 @@
+configfile: "config/config.yaml"
+
+include: "modules/a_common.smk"
+
+wildcard_constraints:
+    group="[^/]+",
+
+rule all:
+    input:
+        expand(
+            f"{RESULTS_DIR}" + "/{sample}/a_hg38_mapping_LRS/{sample}/bam_summary.txt",
+            sample=SAMPLES,
+        ),
+        expand(
+            f"{RESULTS_DIR}" + "/{sample}/a_hg38_mapping_LRS/{sample}_hg38_counts.tsv",
+            sample=SAMPLES,
+        ),
+        f"{RESULTS_DIR}" + "/hg38_read_counts.tsv",
+        expand(
+            f"{RESULTS_DIR}" + "/{sample}/b_l1_te_filter/{sample}_L1_readIDs.txt",
+            sample=SAMPLES,
+        ),
+        expand(
+            f"{RESULTS_DIR}" + "/{sample}/b_l1_te_filter/{sample}_L1_counts.tsv",
+            sample=SAMPLES,
+        ),
+        f"{RESULTS_DIR}" + "/l1_read_counts.tsv",
+        expand(
+            f"{RESULTS_DIR}" + "/{sample}/d_LINE_quantification/{sample}_L1_summary.tsv",
+            sample=SAMPLES,
+        ),
+        expand(
+            L1_FAST5_SAMPLE_DIR + "/{sample}/.subset.done",
+            sample=SAMPLES,
+        ),
+        expand(
+            L1_FAST5_GROUP_PATTERN + "/.merged.done",
+            group=GROUPS,
+        ),
+        expand(
+            L1_FAST5_GROUP_PATTERN + "/.file_count.txt",
+            group=GROUPS,
+        ),
+        expand(
+            L1_NANOPOLISH_DIR + "/{group}.nanopolish.index.done",
+            group=GROUPS,
+        ),
+        expand(
+            L1_NANOPOLISH_POLYA_PATTERN,
+            group=GROUPS,
+        ),
+        expand(
+            L1_NINETAILS_DONE_PATTERN,
+            group=GROUPS,
+        ),
+        expand(
+            f"{GROUP_RESULTS_DIR}" + "/{group}/f_ninetails/{group}_read_classes_reclassified.tsv",
+            group=GROUPS,
+        ),
+        expand(
+            f"{GROUP_RESULTS_DIR}" + "/{group}/g_summary/{group}_L1_summary.tsv",
+            group=GROUPS,
+        ),
+        expand(
+            f"{GROUP_RESULTS_DIR}" + "/{group}/g_summary/{group}_L1_locus_summary.tsv",
+            group=GROUPS,
+        ),
+        expand(
+            L1_MAFIA_SITES_PATTERN,
+            group=GROUPS,
+        ),
+        # Non-L1 control analysis (for decorated rate normalization)
+        # Only runs on base groups (HeLa, MCF7, etc.), not variants (HeLa-Ars, MCF7-EV)
+        expand(
+            f"{GROUP_RESULTS_DIR}" + "/{group}/i_control/{group}_control_summary.tsv",
+            group=BASE_GROUPS,
+        ),
+        #        expand(
+        #            L1_FASTQ_PATTERN,
+        #            group=GROUPS,
+        #        ),
+        #        expand(
+#            L1_SUMMARY_PATTERN,
+#            group=GROUPS,
+#        ),
+#        expand(
+#            L1_NANOPOLISH_DIR + "/{group}.nanopolish.index.done",
+#            group=GROUPS,
+#        ),
+#        expand(
+#            L1_NANOPOLISH_POLYA_PATTERN,
+#            group=GROUPS,
+#        ),
+#        expand(
+#            L1_NINETAILS_DONE_PATTERN,
+#            group=GROUPS,
+#        ),
+
+include: "modules/c_mapping.smk"
+include: "modules/d_l1_filter.smk"
+include: "modules/e_l1_polya.smk"
+include: "modules/f_mafia.smk"
+include: "modules/g_housekeeping.smk"
+
+
+# Validation rule - checks for missing files and stale outputs
+rule validate:
+    shell:
+        """
+        python3 {SCRIPTS_DIR}/validate_pipeline.py -v --show-targets
+        """
+
+
+# Run validation after successful completion
+onsuccess:
+    print("\n" + "="*60)
+    print("Pipeline completed. Running validation...")
+    print("="*60)
+    shell("python3 {SCRIPTS_DIR}/validate_pipeline.py || true")

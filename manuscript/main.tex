@@ -1,0 +1,1119 @@
+\documentclass[11pt]{article}
+
+% --- Packages ---
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\geometry{letterpaper, margin=1in}
+\usepackage{setspace}
+\doublespacing
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{natbib}
+\bibliographystyle{unsrtnat}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true, linkcolor=blue, citecolor=blue, urlcolor=blue}
+\usepackage{booktabs}
+\usepackage{siunitx}
+\usepackage{xcolor}
+\graphicspath{{figures/}}
+
+% --- Custom commands ---
+\newcommand{\msix}{m$^6$A}
+
+\newcommand{\polyA}{poly(A)}
+\newcommand{\LONE}{LINE-1}
+\newcommand{\todo}[1]{\textcolor{red}{[TODO: #1]}}
+
+% --- Title ---
+\title{%
+  Poly(A) tail retention of LINE-1 transcripts under arsenite stress \\
+  covaries with m$^6$A density and structural completeness
+}
+\author{%
+  Junsoo Kim\textsuperscript{1,*},
+  Sojeong Lee\textsuperscript{1,2},
+  Seungbeom Han\textsuperscript{1,3}
+  \\[6pt]
+  \textsuperscript{1}Center for RNA Research, Institute for Basic Science (IBS),
+  Seoul National University, Seoul, Republic of Korea \\
+  \textsuperscript{2}School of Biological Sciences, Seoul National University,
+  Seoul, Republic of Korea \\
+  \textsuperscript{3}Interdisciplinary Program in Bioinformatics, Seoul National University,
+  Seoul, Republic of Korea \\[3pt]
+  \textsuperscript{*}Corresponding author: junsoopablo@snu.ac.kr
+}
+\date{}
+
+% ============================================================
+\begin{document}
+\maketitle
+
+% ============================================================
+% ABSTRACT
+% ============================================================
+\begin{abstract}
+
+\LONE{} (L1) retrotransposons comprise 17\% of the human genome and are
+pervasively transcribed across human cell types, yet how RNA
+modifications shape L1 transcript fate under cellular stress remains
+unknown. Here, we use Oxford Nanopore direct RNA sequencing across nine
+human cell lines (23 libraries) to simultaneously measure \msix{},
+poly(A) tail length, and transcript integrity on individual L1
+molecules. L1
+transcripts carry higher \msix{} density than non-L1 transcripts,
+beyond sequence-composition expectation, and \msix{} density varies
+with evolutionary age. Under arsenite stress, L1 poly(A) tails shorten
+while non-L1 transcripts remain unchanged. Young, full-length L1
+retain their poly(A) tails, and overlapping sequence features---structural
+completeness, EN domain retention, high \msix{} density, and long
+consensus span---each independently confer this protection when present
+in ancient elements. A composite score integrating these features
+separates stressed ancient L1 into subgroups spanning 82--164~nt in
+median poly(A). \msix{} density covaries with poly(A) retention
+specifically under stress, with low-\msix{} reads more frequently
+reaching critically short poly(A) lengths. Together, these findings
+reveal that \msix{} density, uncorrelated with poly(A) under basal
+conditions, becomes a stress-specific correlate of poly(A) retention
+among structurally incomplete L1.
+
+\end{abstract}
+
+% ============================================================
+% INTRODUCTION
+% ============================================================
+\section{Introduction}
+
+Long interspersed nuclear element 1 (\LONE{}, L1) retrotransposons are the
+most abundant autonomous mobile elements in the human genome, constituting
+approximately 17\% of total genomic sequence \citep{Bourque2018}. Although
+most of the $\sim$500,000 L1 copies are ancient, truncated remnants
+incapable of retrotransposition, a small number of evolutionary young,
+full-length elements (L1HS and L1PA subfamilies) retain
+retrotransposition competence \citep{Lanciano2020}. Beyond parasitic
+replication, L1 transcripts serve regulatory functions, including nuclear
+scaffolds in embryonic stem cells \citep{Percharde2018}, long-range
+enhancers \citep{LiX2024}, and contributors to long noncoding RNA
+biogenesis \citep{Kapusta2013}. Notably, ancient L1 fragments are
+preferentially exapted as cis-regulatory elements: transposable
+element--derived sequences contribute $\sim$25\% of candidate
+cis-regulatory elements in the human genome, with LINE families among
+the largest contributors \citep{Du2024encode}. Enhancer-associated
+copies retain higher sequence conservation and longer intact length
+than non-functional counterparts \citep{Nishihara2019}, and the
+probability of enhancer exaptation increases with element age
+\citep{Simonti2017}. Thus, L1 RNA is both a potentially
+deleterious mobile element and a functional regulatory molecule. Multiple
+layers of host regulation---DNA methylation, histone modifications, and
+RNA-based mechanisms---act to restrain L1 activity \citep{Deniz2019}.
+
+$N^6$-methyladenosine (\msix{}) is the most prevalent internal
+modification of mammalian mRNA and a key regulator of L1 biology. \msix{}
+has dual roles on L1 retrotransposons. METTL3-deposited \msix{} in the L1
+$5'$ UTR promotes cap-independent translation of ORF1p and ORF2p via eIF3
+recruitment, enhancing retrotransposition \citep{Hwang2021}. Hwang
+et al. further showed that \msix{} consensus motifs in the L1 $5'$ UTR
+have been under positive evolutionary selection, indicating that L1
+co-opts the host \msix{} machinery. Conversely, the host cell exploits
+the same marks to suppress L1 activity---an \msix{}-based innate defense
+mechanism that also targets other transposable elements
+\citep{Chelmicki2021}---through multiple readers. The nuclear reader
+YTHDC1 recognizes \msix{}-marked L1 RNA and recruits SETDB1 for H3K9me3
+chromatin silencing \citep{Liu2021}, while the cytoplasmic reader YTHDF2
+directs \msix{}-L1 RNA to autophagy-mediated decay \citep{Tian2024}.
+Beyond this antagonism, \msix{} on intronic L1 participates in gene
+regulation, as SAFB engages \msix{}-marked intronic L1 to modulate long
+gene expression \citep{Xiong2021}. This range of \msix{}-dependent
+functions has been the prevailing framework for understanding \msix{} on
+L1.
+
+However, several questions remain unaddressed. First, most studies focus
+on young L1 elements (L1HS, L1PA1--2). The \msix{} landscape of
+\emph{ancient} L1---approximately 86\% of all L1 copies and the
+predominant source of exapted regulatory elements---remains largely
+unexplored, including whether the DRACH motif context required for
+METTL3 recognition is preserved despite millions of years of sequence
+divergence. Second, prior \msix{} quantification of L1 has relied on
+short-read approaches (MeRIP-seq, miCLIP) with severe mapping ambiguity
+across the repetitive L1 family \citep{Lanciano2020}; single-molecule
+\msix{} quantification on L1 has not been achieved. Third, L1 \msix{}
+behavior under cellular stress and its relationship to L1 RNA stability
+have not been investigated, despite evidence that arsenite stress drives
+L1 ORF1p accumulation in stress granules \citep{Goodier2007} and that
+\msix{} mediates stress-granule triage of mRNAs \citep{Anders2018}.
+
+Arsenite stress provides a useful context for studying L1 RNA fate.
+Sodium arsenite triggers rapid stress granule formation and activates a
+non-canonical RNA decay pathway, XRN1-mediated $5'$ exonucleolytic
+digestion that leaves poly(A) tails intact \citep{deMuro2024}. Canonical
+deadenylation is suppressed under arsenite, as the CCR4-NOT complex is
+sequestered into stress granules \citep[preprint]{Bhatt2025} and the
+deadenylase adaptors Tob and Pan3 are degraded \citep{Funakoshi2015}.
+Whether non-translated L1 fragments---intronless, AU-rich RNA
+molecules that lack the ribosomal protection of young, actively
+translated elements---are subject to distinct decay kinetics under these
+conditions has not been examined.
+
+Here, we leverage Oxford Nanopore direct RNA sequencing (DRS) across nine
+human cell lines to simultaneously measure \msix{}, poly(A) tail length,
+and transcript integrity on individual L1 molecules. We report that L1
+carries elevated \msix{} density across evolutionary age, that arsenite
+selectively shortens L1 poly(A) tails while young L1 retain theirs, and
+that overlapping sequence features---including \msix{} density---distinguish
+protected from vulnerable elements, revealing a stress-specific dimension
+of \msix{} on L1 distinct from its established roles in retrotransposition
+and silencing.
+
+% ============================================================
+% RESULTS
+% ============================================================
+\section{Results}
+
+% ------------------------------------------------------------
+\subsection{L1 RNA carries elevated \msix{} density across human cell lines}
+
+We applied Oxford Nanopore direct RNA sequencing (DRS) to nine human cell
+lines and identified 54,234 L1 reads across 12,125 loci using a
+two-stage filter that removes $\sim$90\% of host gene read-through (see
+Methods). Of these, 38,544 were non-embedded and 15,690 were embedded
+within host gene exons (Table~S1). Ancient elements (L1MC,
+L1ME, L1M) comprised 93\% and young elements (L1HS, L1PA1--3) 7\% of the
+non-embedded reads (Supplementary Fig.~S1, Supplementary Table~S2). Long-read alignment largely
+resolves the multi-mapping ambiguity that confounds short-read L1
+studies \citep{Lanciano2020}: ancient L1 reads had a median mapping
+quality (MAPQ) of 60 with $>$80\% uniquely mapped (Supplementary
+Table~S4). Young L1 reads, owing to $>$97\% inter-element sequence
+identity, had lower MAPQ (median 9--29 for L1HS--L1PA2), but the
+kilobase-scale read lengths of DRS still anchor most reads to individual
+loci---an advantage unavailable to 150-bp short reads. Because our
+primary conclusions rely on subfamily-aggregated metrics (\msix{}/kb,
+poly(A) length) rather than locus-level quantification, the residual
+multi-mapping in young L1 does not affect the reported enrichments.
+Among non-embedded L1, 61\% resided within introns and 39\% in
+intergenic regions, with similar mapping quality and poly(A)
+distributions (Supplementary Table~S4).
+
+L1 transcripts carried \msix{} at a density of 2.89 sites/kb, compared
+with 1.62 sites/kb for non-L1 transcripts (randomly subsampled reads
+from the same libraries, predominantly mRNA; see Methods),
+a 1.79-fold enrichment (Fig.~1a). This exceeds sequence-composition
+expectation, as L1 has only 1.22-fold more DRACH motifs per kb than
+non-L1 transcripts (Fig.~1b--c). The enrichment was consistent across
+all nine cell lines and persisted at every probability threshold tested
+(Supplementary Fig.~S13), with high-confidence \msix{} calls occurring
+more frequently on L1. \msix{} density also correlated with evolutionary age.
+Young L1 (L1HS, L1PA1--3) exhibited the highest density (4.16 sites/kb),
+followed by ancient L1 (2.69 sites/kb) and non-L1 transcripts (1.62
+sites/kb, Fig.~1a). The Young${>}$Ancient
+gradient and L1/non-L1 enrichment were consistent across all nine cell
+lines (all $P < 10^{-7}$, Supplementary Fig.~S10a), and subfamily-level
+\msix{}/kb rankings were highly concordant between cell line pairs
+(median Spearman $\rho = 0.85$, Supplementary Fig.~S10b), indicating
+sequence-intrinsic features. \msix{} density showed modest positional
+variation along the L1 consensus, with ORF1-derived fragments carrying
+the highest density (Supplementary Fig.~S4b).
+
+Orthogonal validation with RNA004 chemistry and the Dorado basecaller
+reproduced the L1 enrichment. In length-matched comparisons, L1 reads
+carried 1.5--1.8-fold higher \msix{}/kb than non-L1 reads (Fig.~1d),
+consistent with RNA002 results, and the Young${>}$Ancient gradient was
+recapitulated (1.81-fold). L1 \msix{} showed strong DRACH-motif
+specificity, with the DRACH motif hierarchy nearly identical between L1
+and non-L1 (Spearman $\rho = 0.91$, $P = 1.7 \times 10^{-7}$), with
+GGACT ranking first in both. Among 539 position-reproducible \msix{} sites
+on L1 ($\geq$50\% of reads methylated at a given genomic position), 93\%
+occurred at DRACH motifs (Fig.~1d).
+
+To evaluate ancient L1, we asked whether the positional \msix{} landscape
+mirrors that of young elements. When DRACH sites were mapped to the L1
+consensus sequence, per-position methylation rates of ancient and young
+L1 were correlated (Spearman $\rho = 0.44$, $P = 1.3 \times 10^{-6}$,
+$n = 112$ consensus bins; Fig.~1e): positions that are \msix{} hotspots
+in young L1 showed 1.78-fold higher methylation in ancient copies than
+non-hotspot positions ($P = 5.0 \times 10^{-94}$). Methylation rates at
+individual DRACH sites were predicted by flanking sequence conservation.
+Ancient L1 DRACH sites retaining Young-L1-like flanking sequences
+($\leq$2 mismatches in an 11-mer window) were methylated at twice the
+rate of diverged sites (9.95\% vs.\ 4.98\%; $P = 1.3 \times 10^{-96}$),
+in line with reports that flanking sequence and local RNA
+structure influence methylation \citep{Luo2022,Shachar2024}. The
+Young${>}$Ancient gradient arises from two multiplicative factors. In
+length-matched reads (2--5~kb), young L1 carried 1.41-fold more DRACH
+motifs per kb and showed 1.64-fold higher per-DRACH methylation (Fisher
+$P < 10^{-30}$ for both). Together, these results indicate that L1
+retrotransposons carry \msix{} enrichment that exceeds
+sequence-compositional expectation, shows an evolutionary gradient,
+and displays consistent positional patterns across ancient elements.
+
+% --- Figure 1 ---
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=\textwidth]{fig1.pdf}
+\caption{\textbf{L1 RNA carries elevated \msix{} density.}
+See Figure Legends for full description.}
+\label{fig:m6a_enrichment}
+\end{figure}
+
+% ============================================================
+% RESULTS Part 2
+% ============================================================
+\subsection{Arsenite triggers selective poly(A) shortening of non-embedded L1 transcripts}
+
+Having established that L1 carries elevated \msix{}, we next asked how
+L1 transcripts behave under cellular stress. We analysed ONT DRS data
+from HeLa cells treated with 0.5~mM sodium arsenite for 60 minutes
+\citep{deMuro2024} and compared poly(A) tail lengths between stressed
+and unstressed conditions. L1 poly(A) tails shortened by a median of
+31~nt (122.5 to 91.5~nt, Mann--Whitney $P = 2.6 \times 10^{-17}$),
+whereas non-L1 transcripts showed no significant change
+($\Delta = +2.5$~nt, $P > 0.05$, Fig.~2a). The L1-specific effect
+($\Delta\Delta = -33.5$~nt) indicates that shortening is restricted to
+L1 rather than a global change. To test whether this reflects a
+compositional shift toward loci with inherently shorter tails, we
+tracked 2,268 L1 loci detected exclusively under arsenite across nine
+unstressed cell lines. These loci had a median poly(A) of 77.5~nt under
+arsenite but 125.5~nt in other cell lines ($\Delta = -48.0$~nt,
+$P = 2.2 \times 10^{-35}$, Fig.~2b), confirming a stress-dependent
+effect rather than locus-intrinsic properties. The shortening was
+comparable in intronic and intergenic L1 ($\Delta = -32.9$ and
+$-27.1$~nt, respectively; Supplementary Table~S4), persisted at every
+read-length stratum, and was absent in annotated lncRNAs processed
+through identical pipelines ($\Delta = -2.9$~nt, Cohen’s $d = -0.06$;
+Supplementary Fig.~S15a--b), establishing it as L1-specific rather than
+a general feature of non-coding RNA.
+
+Shortening was confined to ancient L1 elements (L1MC, L1ME, L1M,
+$\Delta = -33$~nt, $P = 1.7 \times 10^{-18}$), whereas young L1 were
+unaffected ($\Delta = -0.1$~nt, $P = 0.77$, Fig.~2c), even after
+matching for \msix{}/kb. Within ancient subfamilies, vulnerability
+followed an evolutionary gradient: deeply ancient elements (L1M5,
+$\Delta = -49$~nt; L1ME4a, $-37$~nt; L1MC3, $-64$~nt) were most
+affected, whereas intermediate-age subfamilies (L1PA5--7) were
+unaffected ($P > 0.1$). Mapping reads to L1 functional domains by
+RepeatMasker consensus coordinates revealed that structural completeness
+was a strong determinant: full-length ancient elements spanning all four
+domains ($5’$~UTR, ORF1, ORF2, $3’$~UTR) were resistant to shortening
+($\Delta = -9$~nt, ns; $n = 114$), whereas partial elements showed
+significant shortening ($\Delta = -33$~nt,
+$P = 1.2 \times 10^{-19}$). Among partial elements, ORF2-only fragments
+were the most vulnerable ($\Delta = -53$~nt, $P = 1.5 \times 10^{-9}$),
+while $3’$~UTR-only fragments---which retain the canonical PAS---were
+largely spared ($\Delta = -10$~nt, ns).
+
+PAS strength further distinguished young from ancient elements, with
+young L1 retaining canonical AATAAA in 58.5\% of copies versus 18.7\%
+for ancient elements ($\chi^2$, $P \approx 0$). Ancient L1 lacking any
+recognizable PAS showed stronger shortening ($\Delta = -35$~nt) than
+those with a PAS variant ($\Delta = -26$~nt), and the stress-specific
+interaction remained significant after controlling for baseline poly(A)
+length (PAS $\times$ stress $P = 0.014$). At baseline, ancient L1
+carried longer poly(A) tails than young elements (median 122 vs.\
+107~nt; Supplementary Fig.~S2). Exon-embedded L1 within lncRNA or
+pseudogene exons (56\% of total L1) were unaffected ($\Delta = -4.0$~nt,
+$P = 0.33$; Supplementary Fig.~S3a). Reads polyadenylated at L1’s own
+$3’$ boundary showed only modest shortening ($\Delta = -21$~nt), about
+half the effect observed for reads relying on a downstream PAS
+($\Delta = -41$~nt; Supplementary Fig.~S14).
+
+Chromatin context further modulated the response among ancient,
+non-embedded L1. L1 in active regulatory chromatin (enhancers and active
+promoters; ChromHMM 15-state, HeLa-S3 E117) showed the strongest
+shortening ($\Delta = -73$~nt vs.\ $-24$~nt for non-regulatory L1,
+Fig.~2d; OLS stress$\times$regulatory $\beta = -36.4$,
+$P = 1.1 \times 10^{-4}$), with enhancer-associated L1 most affected
+($\Delta = -78$~nt, $P = 3.8 \times 10^{-7}$). This vulnerability was
+additive with \msix{}, as regulatory L1 showed greater shortening across
+all \msix{} quartiles (Supplementary Fig.~S5a--c). Within stressed
+regulatory L1, the \msix{}--poly(A) association was strong (Q4 median
+59~nt vs.\ 28~nt for Q1, $P = 2.9 \times 10^{-4}$; Supplementary
+Fig.~S5d). At the gene level, 69 regulatory L1 host genes with reads in
+both conditions showed a bidirectional response, and the \msix{}/kb of
+each gene’s L1 reads predicted the direction (Spearman $\rho = 0.38$,
+$P = 0.001$; Supplementary Fig.~S6).
+
+The shortening was genome-wide rather than driven by a few
+high-abundance loci, and the effect strengthened when top-contributing
+loci were removed (Supplementary Fig.~S3c--d). Arsenite also induced $5’$
+truncation (median $\Delta = -108$~bp, $P = 2.5 \times 10^{-12}$), but
+$3’$ poly(A) shortening and $5’$ truncation were independent at the
+single-molecule level ($r = 0.044$, $P = 0.12$). Cycloheximide (CHX),
+which prevents stress granule (SG) assembly by trapping ribosomes on
+mRNAs, rescued L1 poly(A) shortening. Median poly(A) under Ars+CHX was
+93.6~nt, indistinguishable from mock (88.2~nt, $P = 0.66$), compared
+with 65.9~nt under arsenite alone ($P = 0.005$ vs.\ mock, Fig.~2e). The
+rescue was specific to ancient L1 ($\Delta = +29.3$~nt,
+$P = 1.3 \times 10^{-4}$) and uniform across \msix{} quartiles
+(Supplementary Fig.~S7), placing SG formation upstream of the
+\msix{}-associated poly(A) variation described below. L1 RPM was 1.51-fold
+higher under Ars+CHX than arsenite alone (879 vs.\ 582). XRN1 knockdown
+alone increased L1 proportion 1.46-fold ($P = 2.0 \times 10^{-11}$,
+$\chi^2$ test), while XRN1 knockdown under arsenite had no additional
+effect (1.07-fold, $P = 0.15$), indicating convergence on the same
+pathway (Fig.~2f). L1 \msix{}/kb remained constant across all four
+conditions ($\sim$2.5/kb). Independent ribo-depleted Illumina RNA-seq
+under the same arsenite treatment (GSE278916, $n = 2$ per condition)
+showed reduced RNA abundance, with 53 of 67 ancient L1 subfamilies with
+significant changes showing downregulation (Supplementary Fig.~S11).
+
+% --- Figure 2 ---
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=\textwidth]{fig2.pdf}
+\caption{\textbf{Arsenite triggers selective poly(A) shortening of non-embedded L1.}
+See Figure Legends for full description.}
+\label{fig:arsenite_selectivity}
+\end{figure}
+
+% ============================================================
+% RESULTS Part 3
+% ============================================================
+\subsection{\msix{} density is associated with L1 poly(A) retention under stress}
+
+We next asked whether \msix{} density is associated with the extent of
+poly(A) shortening on individual L1 molecules. Although \msix{} density
+itself showed only a modest decrease under arsenite (2.50 vs.\ 2.62
+sites/kb, 4.4\% reduction, Mann--Whitney $P = 0.012$), the relationship
+between \msix{} density and poly(A) length changed markedly. We
+stratified L1 reads into \msix{}/kb quartiles and compared poly(A)
+distributions (Fig.~3a). In unstressed HeLa cells, poly(A) tail length
+varied modestly across quartiles (Q1 = 109 nt, Q4 = 140 nt,
+$\Delta$ = 31 nt), whereas under arsenite the separation widened, with
+low-\msix{} reads (Q1) showing a median poly(A) of 65 nt and
+high-\msix{} reads (Q4) retaining 124 nt ($\Delta$ = 59 nt).
+
+Under normal conditions, \msix{}/kb and poly(A) were uncorrelated
+($r \approx 0$; Supplementary Fig.~S3b), whereas under arsenite a
+positive association emerged (per-read Spearman $\rho = 0.201$,
+$P = 3.3 \times 10^{-26}$; median $\Delta$poly(A) from $-42$~nt in Q1
+to $-16$~nt in Q4; Supplementary Fig.~S12). PAS presence was an independent protective
+factor. When both PAS and \msix{} were included in the same model, each
+remained significant (PAS $\times$ stress $P = 0.014$, \msix{}/kb
+$\times$ stress $P = 1.4 \times 10^{-4}$). The coupling was driven by
+ancient L1, where the \msix{}--poly(A) correlation increased from
+$r = 0.06$ (normal) to $r = 0.18$ ($P < 10^{-19}$) under stress, while
+young L1 showed no change ($r \approx 0.07$, ns; Fig.~3b). Stratifying
+stressed ancient L1 by \msix{} and PAS status (CpG density averaged)
+revealed a 69-nt range in median poly(A), from 132~nt for high-\msix{}
+with canonical PAS to 63~nt for low-\msix{} without PAS (32\%
+below 30~nt; Fig.~3c). The association scaled with cumulative \msix{}
+density rather than site position; splitting \msix{} sites into
+$3'$-proximal and $5'$-distal regions showed no difference ($P = 0.44$),
+unlike mRNA \msix{} clustering near stop codons \citep{Ke2017}.
+
+Reads with critically short poly(A) tails ($<$ 30 nt, below the PABPC1
+dissociation threshold) were enriched among low-\msix{} L1 under stress.
+30.6\% of Q1 reads fell below this threshold compared with 15.3\% of Q4
+reads (2.0-fold, Fisher's exact test, $P = 5.9 \times 10^{-11}$;
+Supplementary Table~S6).
+Under normal conditions, this disparity was modest (Q1 14.6\% vs.\ Q4
+10.3\%, $P = 0.036$). To estimate how much poly(A) variation is
+attributable to \msix{} density, we aggregated reads by genomic L1 locus
+(median \msix{}/kb and median poly(A) per locus; loci with $\geq$5
+reads). The per-locus Spearman correlation was $\rho = 0.51$
+($P = 1.7 \times 10^{-4}$, $n = 49$ loci), with an OLS $R^2 = 0.12$ and a
+weighted least-squares $R^2 = 0.18$ (Supplementary Table~S7). The
+effect was absent in unstressed loci ($R^2 = 0.003$,
+$n = 140$), confirming stress dependence. Together, these data indicate
+that L1 poly(A) retention under stress is associated with a hierarchy of
+molecular features: PAS strength as the primary constitutive factor,
+\msix{} density as a stress-specific correlate, and
+chromatin context as an independent modulator (Fig.~\ref{fig:model_flow}).
+
+% --- Figure 3 ---
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=\textwidth]{fig3.pdf}
+\caption{\textbf{\msix{} density is associated with L1 poly(A) retention under stress.}
+See Figure Legends for full description.}
+\label{fig:m6a_polya_coupling}
+\end{figure}
+
+% ============================================================
+% RESULTS Part 4
+% ============================================================
+\subsection{Sequence features of young L1 confer stress immunity}
+
+Having established that \msix{} density covaries with poly(A) retention
+under stress, we asked what sequence-encoded features distinguish young
+L1, which are immune to shortening, from vulnerable ancient elements.
+Young L1 differed from ancient elements across five axes: \msix{}/kb
+(1.8-fold), full-length fraction (19.9-fold), EN domain retention
+(4.0-fold), consensus span (8.8-fold), and $3'$~UTR coverage
+(1.6-fold; Fig.~\ref{fig:immunity}a). Each of these features
+independently conferred stress immunity when present in ancient L1:
+full-length ancient elements ($\Delta = -9$~nt, ns), EN-containing
+elements ($\Delta = -6.1$~nt, ns), elements with high \msix{}
+($\geq$ young median; $\Delta = -12.6$~nt, ns), and elements with long
+consensus span ($\Delta = +5.6$~nt, ns) were all resistant, whereas
+ancient elements lacking each feature showed significant shortening
+($\Delta = -34$ to $-47$~nt, all $P < 0.001$;
+Fig.~\ref{fig:immunity}b). The sole exception was $3'$~UTR coverage,
+which did not protect ancient elements ($\Delta = -24.4$~nt,
+$P = 4.3 \times 10^{-7}$), consistent with the requirement for
+upstream structural features beyond the PAS. A composite immunity
+score (0--3, one point each for full-length status, EN domain
+retention, and high \msix{}/kb) showed a dose-dependent relationship
+with poly(A) retention under stress: score~0 median 82~nt, score~1
+108~nt, score~2 116~nt, score~3 164~nt (Spearman $\rho = 0.112$,
+$P = 1.3 \times 10^{-8}$; Fig.~\ref{fig:immunity}c).
+At the motif level, the EN domain harbors the highest DRACH density in
+L1 (43.2/kb, 1.38-fold the consensus average) alongside near-complete
+CpG depletion (2.8/kb, obs/exp = 0.08; Fig.~\ref{fig:immunity}d),
+creating a region maximally accessible to METTL3-mediated \msix{}
+deposition while invisible to ZAP-mediated CpG surveillance
+\citep{Takata2017,Moldovan2015}. Importantly, \msix{}/kb retained independent predictive value after
+controlling for structural features. Among stressed ancient L1 reads
+($n = 2{,}572$), a likelihood ratio test comparing OLS models with and
+without \msix{}/kb (controlling for full-length status, EN domain,
+consensus span, and $3'$~UTR coverage) yielded $\chi^2 = 57.9$,
+$P = 2.7 \times 10^{-14}$, with each unit increase in \msix{}/kb
+associated with $+6.3$~nt longer poly(A) ($\Delta R^2 = 2.2\%$). The
+larger coefficient compared with the pooled OLS
+($\beta = 4.2$, Supplementary Table~S3) reflects the restriction to
+stressed ancient elements, where the \msix{}--poly(A) association is
+strongest. These results
+place \msix{} density alongside structural completeness and PAS
+strength in a multi-feature framework that quantitatively predicts L1
+poly(A) fate under stress.
+
+% --- Figure 4: Young L1 immunity features ---
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=\textwidth]{fig4.pdf}
+\caption{\textbf{Sequence features of young L1 confer stress immunity.}
+See Figure Legends for full description.}
+\label{fig:immunity}
+\end{figure}
+
+% --- Figure 5: Working model ---
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=\textwidth]{fig5_model.pdf}
+\caption{\textbf{Working model: \msix{} density and poly(A) retention under stress.}
+See Figure Legends for full description.}
+\label{fig:model_flow}
+\end{figure}
+
+% ============================================================
+% DISCUSSION
+% ============================================================
+\section{Discussion}
+
+We show that young, full-length L1 retain their poly(A) tails under
+arsenite stress, and that overlapping sequence features---structural
+completeness, EN domain retention, high \msix{} density, and long
+consensus span---each independently confer this protection. Ancient L1
+lacking these features undergo selective poly(A) shortening, and among
+these vulnerable elements, \msix{} density covaries with poly(A)
+retention in a dose-dependent pattern. The \msix{} marks that promote
+retrotransposition \citep{Hwang2021} and mediate transcriptional
+silencing \citep{Liu2021,Tian2024} thus show a third, stress-dependent
+dimension: an association with differential poly(A) retention among
+structurally incomplete L1.
+
+That L1 poly(A) tails shorten under arsenite contrasts with the
+suppression of canonical deadenylation during this stress---CCR4-NOT is
+sequestered into stress granules \citep[preprint]{Bhatt2025} and the
+deadenylase adaptors Tob and Pan3 are degraded \citep{Funakoshi2015}---and
+non-L1 transcripts retain their poly(A) (Fig.~2a). Although
+retrotransposon poly(A) tails can form protective triple-helix
+structures in plant systems \citep{Li2025triplehelix}, human L1 lacks
+the ENE motif required for such structures, and its poly(A) tails are
+clearly vulnerable to shortening. L1, as non-translated, intronless,
+AU-rich RNA, may instead engage non-canonical decay. The HUSH--NEXT
+axis targets intronless transcripts for nuclear decay
+\citep{Tchasovnikarova2022,Garland2022}, which would explain the
+resistance of exon-embedded L1 that inherit spliced architecture.
+MOV10--DCP2 mediates $5'$ decay through phase-separated granules
+\citep{LiXembr2023}, a mechanism that may underlie the concurrent $5'$
+truncation we observe. Cycloheximide blocks stress granule assembly and
+rescues poly(A) (Fig.~2e), placing shortening downstream of SG
+formation, as reported for SG-dependent $5'$ decay \citep{deMuro2024}.
+L1 additionally undergoes $3'$ poly(A) shortening. This $3'$ component
+is distinct from $5'$ decay:
+$5'$ truncation and $3'$ poly(A) shortening are independent at the
+single-molecule level ($r = 0.044$, $P = 0.12$), and XRN1---which can process \msix{}-containing RNA without
+impediment \citep{Athapattu2021}---degrades L1 non-selectively. L1 \msix{}/kb is
+unchanged across all four factorial conditions ($\sim$2.5/kb), the
+\msix{} quartile distribution is uniform in mock and XRN1~KD, and
+XRN1~KD increases L1 abundance equally across \msix{} strata. In
+contrast, poly(A) shortening correlates with \msix{} density and is strongest in
+regulatory chromatin ($\Delta = -73$~nt vs.\ $-30$~nt at quiescent loci).
+These axes separate bulk turnover (XRN1) from stress-inducible
+poly(A) shortening that is associated with \msix{} density. Supporting
+this dichotomy, L1 reads experiencing $3'$-only vulnerability
+carried lower \msix{}/kb than reads affected by neither pathway
+(1.42 vs.\ 2.04, $P = 1.0 \times 10^{-15}$), whereas XRN1 sensitivity was
+uniform across \msix{} strata. The coupling was similar in intronic and
+intergenic L1 (Spearman $r = 0.195$ and $0.198$), indicating that
+selectivity reflects transcript-intrinsic features rather than genomic
+context.
+
+How might a modification associated with decay under basal conditions
+become associated with retention under stress? One possibility is reader
+redistribution: arsenite relocates YTHDF1/3 to SG peripheries and
+recruits YTHDF2 for structural maintenance rather than decay
+\citep{FuZhuang2020,LiuSciAdv2024}, potentially allowing the competing
+IGF2BP stability-promoting readers \citep{Huang2018igf} to dominate.
+However, arsenite also promotes YTHDF2 phase separation in a
+concentration-dependent manner \citep{Wang2023ythdf2}, which would
+predict enhanced \msix{}-mediated decay rather than protection.
+Whether YTHDF2-mediated decay operates on non-translated, intronless L1
+in the same manner as on mRNAs remains unclear; L1 may be a poor
+YTHDF2 substrate given its lack of translational context. The
+minimal change in L1 \msix{} density ($<$5\% reduction) is consistent
+with reader redistribution rather than altered deposition, but
+distinguishing between these models will require reader-specific
+perturbation under stress. The
+\msix{}--poly(A) association on L1 also inverts the canonical
+relationship on translated mRNAs, where \msix{} promotes cotranslational
+decay via ribosome stalling and CCR4-NOT recruitment
+\citep{Lima2017,Absmeier2024}. Ancient L1, presumably untranslated,
+would escape this pathway, which may explain their longer baseline
+poly(A) than young elements (122 vs.\ 107~nt). The same translational
+inertness may also deprive them of ribosome-mediated protection,
+rendering them vulnerable when stress-specific pathways are activated.
+
+Young L1 stress immunity reflects overlapping sequence-encoded
+protections rather than a single determinant
+(Fig.~\ref{fig:immunity}a,b). Five features distinguish immune from
+vulnerable elements---structural completeness (full-length fraction),
+EN domain retention, high \msix{}/kb, long consensus span, and
+$3'$~UTR coverage---and each independently confers immunity when
+present in ancient L1. A composite score integrating these features
+predicts poly(A) retention in a dose-dependent manner
+(Fig.~\ref{fig:immunity}c), with score~3 ancient elements exceeding
+Young L1 levels. The EN domain is central to this architecture: it
+combines the highest DRACH density (43.2/kb) with near-complete CpG
+depletion (obs/exp = 0.08), creating an \msix{} deposition zone
+invisible to ZAP surveillance \citep{Takata2017,Moldovan2015}. As
+domains are lost through $5'$ truncation, these protections are
+progressively stripped: ORF2-only fragments become the most vulnerable
+($\Delta = -53$~nt). \msix{} thus emerges as a late-stage correlate
+whose association with poly(A) retention becomes detectable only in
+structurally incomplete elements that lack other protections. This
+framing aligns with the \msix{} surveillance model, which proposes
+that \msix{} preferentially marks intronless transcripts as
+quality-control targets \citep{Ke2026}. Under basal conditions, such
+marking may facilitate decay; under stress, when SG sequestration
+disables canonical decay, the same marks may be co-opted for
+differential poly(A) retention.
+
+These observations have implications
+for L1 regulatory biology. L1 RNA serves direct regulatory functions---as
+a nuclear scaffold \citep{Percharde2018}, a chromatin remodeler
+\citep{Wei2022}, and an enhancer-like element \citep{LiX2024}---and
+ancient L1 are preferentially exapted as cis-regulatory elements
+\citep{Du2024encode}. Supporting a functional role for the \msix{}
+enrichment we report, \msix{} on ancient L1PA elements directly regulates
+EP300/KAP1 binding and LTR trans-silencing in human embryonic stem cells
+\citep{Zhu2025L1PA}. The selective poly(A) shortening we observe under
+stress could therefore alter the composition of the regulatory L1 RNA
+pool, although demonstrating downstream chromatin consequences will
+require perturbation of \msix{} writers specifically on L1.
+
+The stress resilience of young L1 may help explain a long-observed
+phenomenon: L1 RNA accumulation under cellular stress and senescence
+\citep{DeCecco2019,Gorbunova2021}. Prior studies have attributed this
+accumulation to transcriptional derepression---DNA demethylation and
+chromatin relaxation unlock L1 promoters
+\citep{Gorbunova2021}. Our
+data suggest that post-transcriptional stability is a complementary
+mechanism. Young, full-length L1 carry overlapping protections
+(Fig.~\ref{fig:immunity}a,b) that shield their poly(A) tails from
+stress-induced shortening, allowing newly transcribed L1 RNA to
+persist. In contrast, ancient L1 fragments lacking these features
+undergo selective poly(A) shortening and decay. The net effect---young
+L1 RNA accumulation alongside ancient L1 RNA depletion---may reshape
+the cellular L1 RNA pool under stress, favoring retrotransposition-competent
+over regulatory transcripts.
+
+Sequence-intrinsic features provide a quantitative framework for this
+selectivity. Triple stratification by \msix{} density, canonical PAS, and
+CpG content separates stressed ancient L1 into subgroups spanning
+89.5~nt in median poly(A) (136~nt for high-\msix{}/PAS$^+$/CpG-high
+versus 47~nt for low-\msix{}/PAS$^-$/CpG-high), with critically short
+poly(A) ($<$30~nt) frequency ranging from 10.5\% to 36.1\%---a 3.4-fold
+difference. These features are sequence-encoded and cross-cell-line
+consistent (CV~=~0.112 for \msix{}/kb), offering a basis for predicting
+which L1 elements are most susceptible to stress-induced poly(A)
+shortening. The regulatory functions of ancient L1 RNA
+\citep{Percharde2018,Zhu2025L1PA} suggest that their selective
+post-transcriptional remodeling may have functional consequences that
+remain unexplored.
+
+Several limitations constrain interpretation. The \msix{}--poly(A)
+association, while robust and dose-dependent, remains correlational.
+The per-read OLS model (stressed reads only) explains a modest fraction
+of poly(A) variance ($R^2 = 0.031$; the full pooled model including
+both conditions yields $R^2 = 0.039$, Supplementary Table~S3, with a
+partial $R^2$ of 0.003 for the stress $\times$ \msix{}/kb interaction),
+as expected given single-molecule noise, stochastic poly(A) tail
+dynamics, and the multiple determinants of poly(A) length. Per-locus aggregation, which averages over within-locus
+noise, raises the explained variance to $R^2 = 0.12$--0.18
+(Supplementary Table~S7), but rests on only 49 loci with $\geq$5 reads
+(bootstrap 95\% CI for $\rho$: 0.28--0.70, 10{,}000 resamples). The association is
+significant across all five probability thresholds tested
+(50\% to 90\%, all $P < 2 \times 10^{-4}$; Supplementary
+Table~S5), arguing against threshold-dependent circularity.
+Perturbation of \msix{} writers under stress would be needed to
+establish causality. We note that analysis of a published METTL3
+knockout dataset (HEK293T; PRJEB40872) showed no significant reduction
+in L1 \msix{}/kb (fold change = 0.97, $P > 0.05$), though non-L1
+control transcripts showed a modest decrease (0.91-fold, $P = 0.035$).
+This null result may reflect cell-type differences, residual METTL3
+activity, or limitations of modification calling on repetitive
+sequences, but it underscores the need for L1-targeted writer
+perturbation under stress conditions. DRS captures only surviving polyadenylated RNA and
+cannot measure decay rates directly. The $3'$ bias of DRS (90\% of reads
+within 1~kb of the $3'$ end) limits $5'$ UTR coverage; the median L1 body
+overlap per read is 0.35, so read-level \msix{}/kb includes flanking
+modifications, though restricting to high-overlap reads preserves the
+dose-response pattern (Supplementary Fig.~S8). ChromHMM states from E117 (HeLa-S3) were used as a
+proxy for HeLa chromatin; subline-specific epigenetic divergence cannot
+be excluded. All stress-related findings derive from a single cell line
+(HeLa) treated with arsenite for 60~minutes. Baseline \msix{} enrichment
+is consistent across nine cell lines (CV~=~0.112), but generalizability
+to other cell types and stressors remains to be established. MAFIA was
+trained on non-repetitive transcripts \citep{Pratanwanich2021,Hendra2022},
+and nanopore modification callers show variable performance across
+sequence contexts \citep{Deng2024bench}; benchmarking specifically on
+repetitive elements remains a priority. However, the
+L1 \msix{} enrichment was independently reproduced using RNA004 chemistry
+with the Dorado basecaller (length-matched L1/non-L1 ratio 1.5--1.8-fold;
+Fig.~1d), and 93\% of position-reproducible sites mapped to DRACH motifs,
+supporting the reliability of our modification calls. Time-course and
+multi-cell-line stress experiments are important next steps. For the
+XRN1~KD experiments, statistical comparisons are based on read-level
+variation within single biological replicates per condition due to a
+sequencing-platform batch effect (see Methods).
+
+% ============================================================
+% MATERIALS AND METHODS
+% ============================================================
+\section{Materials and Methods}
+
+\subsection*{Data sources}
+
+We reanalysed publicly available Oxford Nanopore direct RNA sequencing
+(DRS) data from three sources.
+\textbf{(i)}~Baseline transcriptome data for nine human cell lines
+(A549, H9, HCT116, HeLa, HepG2, HEYA8, K562, MCF7, and SH-SY5Y; 23
+libraries total) were obtained from the SG-NEx project
+\citep{ChenSGNEx2025}. All libraries used the ONT SQK-RNA002 kit
+(MinION, FLO-MIN106, R9.4.1 chemistry) with at least two biological
+replicates per cell line.
+\textbf{(ii)}~HeLa arsenite-stress data (0.5~mM NaAsO$_2$, 60~min; three
+replicates), cycloheximide co-treatment data, and XRN1 knockdown data
+were obtained from PRJNA842344 \citep{deMuro2024}. For XRN1~KD/CHX,
+replicate~1 (PromethION) and replicate~2 (MinION) showed a 2.94-fold
+platform batch effect; only MinION replicate~2 was used for all four
+factorial conditions (mock, XRN1~KD, arsenite, arsenite~+~XRN1~KD), so
+comparisons are based on read-level variation within single
+replicates. MCF7-EV data were from the same SG-NEx panel.
+\textbf{(iii)}~For RNA004 validation, HeLa DRS data were basecalled with
+Dorado v0.8.0 (ONT; model
+\texttt{rna004\_130bps\_sup@v5.2.0\_inosine\_m6A\_2OmeA@v1}), which
+detects \msix{} at all adenosine positions regardless of motif context.
+Per-read \msix{}/kb was computed from the BAM-encoded per-base
+modification probabilities (threshold $\geq 0.80$) to compare with
+MAFIA-derived values. Raw signal data were obtained as FAST5 or POD5 files.
+
+\subsection*{Basecalling and alignment}
+
+Raw FAST5 files were basecalled using Guppy v6.0.0 (ONT) with the
+high-accuracy RNA model (\texttt{rna\_r9.4.1\_70bps\_hac}). Basecalled
+reads were aligned to GRCh38/hg38 using minimap2 v2.28
+\citep{Li2018minimap2} with splice-aware settings and a GENCODE v38
+junction BED file (\texttt{--junc-bed}). Secondary alignments were
+discarded and BAM files were sorted and indexed with samtools v1.23.
+
+\subsection*{Two-stage L1 identification filter}
+
+L1 reads were identified through a two-stage filter designed to
+eliminate host gene read-through contamination.
+
+\emph{Stage 1 (coarse filter).} Aligned reads were intersected with
+RepeatMasker L1 annotations (UCSC rmsk track, hg38) using bedtools
+v2.31.0. Reads with $\geq$10\% overlap to annotated L1 elements were
+retained.
+
+\emph{Stage 2 (fine filter).} Stage 1 reads were filtered by four
+criteria: (i) exclusion of reads with splice junctions (CIGAR `N'
+operations $>$ 50 bp), (ii) selection of the best alignment per read,
+(iii) exclusion of reads with $\geq$100 bp overlap to protein-coding
+exons (GENCODE v38), and (iv) strand concordance with the annotated L1
+element. Reads passing both stages were classified as non-embedded L1
+(``PASS'' in the analysis pipeline). The 100~bp exon overlap threshold
+was empirically validated: 92.1\% of non-embedded L1 reads have zero exon
+overlap, and the biological signal (arsenite poly(A) shortening) is
+indistinguishable between zero-overlap and near-threshold reads
+(Supplementary Fig.~S9). Reads failing Stage~2 criterion (iii) due to
+overlap with long noncoding RNA or pseudogene exons (but not
+protein-coding exons) were classified as exon-embedded L1.
+
+Non-L1 reads from the same libraries were randomly subsampled to form
+the comparison group and processed through identical nanopolish and
+MAFIA pipelines. Because DRS captures poly(A)$^+$ RNA, these non-L1 reads
+are dominated by highly expressed protein-coding transcripts: 93.9\%
+protein-coding mRNA, 3.2\% MT-rRNA, and 1.7\% lncRNA ($n = 40{,}659$
+reads across 6,512 genes). The top contributors include \emph{MT-RNR2},
+\emph{EEF1A1}, \emph{FTL}, and ribosomal protein mRNAs. This composition
+differs from L1 reads in sequence context, expression level, and
+transcript architecture. To address potential bias from
+expression-level differences in \msix{}/kb, we performed
+expression-matched analyses using gene-weighted and
+quintile-stratified controls (see Methodological considerations). These
+reduced the L1/non-L1 \msix{}/kb ratio but did not alter the principal
+conclusions.
+
+As an additional control for non-coding RNA identity, annotated lncRNAs
+(GENCODE v38 biotype ``lncRNA'') were independently identified from the
+same libraries and processed through identical nanopolish poly(A) and
+MAFIA pipelines (6 libraries $\times$ $\sim$3{,}000--4{,}800 MAFIA reads).
+Read-length-matched analyses confirmed that poly(A) and \msix{}
+differences were not attributable to transcript length
+(Supplementary Fig.~S15).
+
+\subsection*{L1 subfamily and age classification}
+
+L1 subfamily assignments were derived from RepeatMasker annotations.
+Elements were classified as ``young'' (L1HS, L1PA1, L1PA2, L1PA3) or
+``ancient'' (all other L1 subfamilies including L1MC, L1ME, L1M families).
+Consensus positions within the full-length L1 reference were obtained
+from RepeatMasker \texttt{repStart}, \texttt{repEnd}, and
+\texttt{repLeft} fields (UCSC rmsk track). Functional domains were
+defined on the L1HS consensus (6{,}064~bp): $5'$~UTR (1--908),
+ORF1 (909--1{,}990), ORF2 (1{,}991--5{,}817), and $3'$~UTR
+(5{,}818--6{,}064). Each genomic L1 element was assigned a primary
+domain based on the largest consensus overlap, and elements spanning
+all four domains were classified as ``full-length''. For the ORF2
+sub-domain analysis, the EN domain was defined as consensus positions
+1{,}991--2{,}708, the RT domain as 2{,}709--4{,}149, and the C-rich
+domain as 4{,}150--5{,}817.
+
+\subsection*{Mutation sensitivity mapping}
+
+To identify L1 consensus positions where mutations correlate with stress
+vulnerability, we extracted the genomic sequences of 508 ancient L1 loci
+(top and bottom poly(A) quartiles under arsenite) using
+bedtools~getfasta (strand-aware). Sequences were aligned to the L1HS
+consensus (GenBank L19088.1) with minimap2 (\texttt{-{}-eqx -{}-MD}).
+Per-position match/mismatch counts were tallied separately for
+stress-sensitive and stress-resistant loci. Mutation rate differences
+were assessed in 100-bp sliding windows (50-bp step) using Fisher's
+exact test with Bonferroni correction. Only windows with $\geq$100
+aligned bases in both groups were included.
+
+\subsection*{Poly(A) tail length estimation}
+
+Poly(A) tail lengths were estimated from raw nanopore signal using
+nanopolish v0.14.0 \citep{Simpson2017nanopolish} with the
+\texttt{polya} module, which fits a piecewise model to the poly(A)
+signal segment. Only reads with a ``PASS'' quality flag from nanopolish
+were retained.
+
+\subsection*{\msix{} modification calling}
+
+\msix{} modifications were called from aligned BAM files using
+psi-co-mAFiA (v0.0.1; \citealp{Hendra2022}), which
+assigns per-base \msix{} modification probabilities (ChEBI:21891)
+encoded as MM/ML tags in the BAM output.
+
+Modification calls were parsed from MM/ML BAM tags, matching both
+forward-strand (N$+$\allowbreak 21891) and reverse-strand
+(N$-$\allowbreak 21891) tags to capture modifications on all mapped reads.
+A probability threshold of $\geq 0.80$ (ML $\geq$ 204/255) was used to
+classify sites as modification-positive for all analyses.
+
+\subsection*{\msix{} density and decomposition analysis}
+
+\msix{} density was computed as the number of modification-positive DRACH
+sites per kilobase of aligned read length. To determine whether L1
+\msix{} density exceeds what would be expected from elevated DRACH motif
+frequency in AT-rich L1 sequences, we counted DRACH motif positions
+(D = A/G/T, R = A/G, H = A/C/T) within each read's aligned reference
+sequence. Reference sequences were extracted in a CIGAR-aware manner,
+walking only through M (match), = (sequence match), and X (mismatch)
+CIGAR operations to exclude intronic regions in spliced non-L1 reads.
+This CIGAR-aware extraction was critical for non-L1 transcripts, where
+using \texttt{reference\_end} $-$ \texttt{reference\_start} (which
+includes intronic spans) inflated motif counts by approximately 4-fold.
+
+\subsection*{Statistical analyses}
+
+All statistical analyses were performed in Python 3.10 using scipy,
+statsmodels, and pandas. Two-group comparisons used the Mann--Whitney
+$U$ test (poly(A) tail lengths, \msix{}/kb) or Fisher's exact test
+(\msix{} site counts). Multi-group comparisons used the
+Kruskal--Wallis test. Effect sizes for modification enrichment were
+computed as fold change of \msix{}/kb. The relationship between \msix{} density and
+poly(A) tail length was modeled using ordinary least-squares (OLS)
+regression with the model:
+
+\begin{equation}
+\text{poly(A)} = \beta_0 + \beta_1 \cdot \text{\msix{}/kb} + \beta_2 \cdot \text{stress} + \beta_3 \cdot (\text{\msix{}/kb} \times \text{stress}) + \epsilon
+\end{equation}
+
+\noindent where stress is a binary indicator for the arsenite condition.
+The full model included additional covariates for read length (z-scored),
+L1 age (young vs.\ ancient), and their interactions
+(Supplementary Table~S3).
+The interaction coefficient $\beta_3$ tests whether the \msix{}--poly(A)
+relationship differs between stressed and unstressed conditions. Pearson
+and Spearman correlation coefficients were computed for stratified
+subgroups (L1 age, genomic context, stress condition).
+
+To reduce single-molecule measurement noise, we performed per-locus
+aggregation by grouping reads that mapped to the same genomic L1
+insertion (defined by chromosome, start, end, and strand). For each
+locus, median \msix{}/kb and median poly(A) length were computed.
+Per-locus regression was performed using both ordinary least-squares
+and weighted least-squares (weight = number of reads per locus) on
+loci with a minimum read depth of 3 or 5 reads. Multiple testing
+correction was not applied to the primary analyses, as each test
+addressed a distinct, pre-specified hypothesis. Where exploratory
+analyses involved multiple comparisons, this is noted in the text.
+
+\subsection*{Illumina RNA-seq validation}
+
+To orthogonally validate L1 expression changes under arsenite,
+we analysed publicly available ribo-depleted Illumina RNA-seq data from
+HeLa cells (GSE278916, untreated $n=2$, arsenite $n=2$). Reads were
+aligned to the human genome (hg38, GENCODE v38) using STAR v2.7.11a with
+multi-mapper settings compatible with TE quantification
+(\texttt{--outFilterMultimapNmax 100}). L1 subfamily-level expression
+was quantified with TEtranscripts v2.2.3 using the EM algorithm for
+multi-mapper resolution and the RepeatMasker TE annotation
+(hg38\_rmsk\_TE.gtf). Differential expression was assessed with
+DESeq2 (integrated within TEtranscripts). As a complementary approach,
+element-level L1 counts were obtained with featureCounts (Subread v2.0.6)
+in fractional multi-mapper mode and normalized using DESeq2-style
+median-of-ratios gene-level size factors.
+
+\subsection*{Gene ontology and genomic context analysis}
+
+Host genes harboring intronic L1 were identified by intersecting L1
+genomic coordinates with GENCODE v38 gene annotations. Gene Ontology
+enrichment was performed using Enrichr. PAS motifs were scanned within
+50 bp upstream of each L1 element's $3'$ end in the reference genome,
+searching for the canonical AATAAA and 11 variant PAS hexamers.
+
+\subsection*{ChromHMM chromatin state annotation}
+
+Chromatin state annotations were obtained from the Roadmap
+Epigenomics 15-state ChromHMM model \citep{Roadmap2015}. For HeLa
+analyses, the E117 (HeLa-S3) segmentation BED file was used. Each L1
+element was assigned to a chromatin state by intersecting its genomic
+midpoint with the ChromHMM state annotation using bedtools intersect.
+States were grouped into functional categories: ``regulatory'' (active
+enhancers [states 6--7] and active promoters [states 1--3]),
+``transcribed'' (states 4--5, 9--11), and ``quiescent/repressed''
+(states 12--15).
+
+% ============================================================
+% DATA AVAILABILITY
+% ============================================================
+\section{Data Availability}
+
+This study reanalysed publicly available datasets; no new sequencing
+data were generated. Baseline DRS data for nine human cell lines were
+obtained from the SG-NEx project (ENA: ERP125816). Arsenite-stress,
+cycloheximide, and XRN1~KD data were from PRJNA842344
+\citep{deMuro2024}. PUS enzyme knockdown data were from PRJNA1220613
+(BE(2)-C) and PRJNA1092333 (SH-SY5Y). Analysis code and
+figure-generation scripts are available at \todo{GitHub repository URL}.
+
+% ============================================================
+% ACKNOWLEDGMENTS
+% ============================================================
+\section*{Acknowledgments}
+
+We thank Hyeshik Chang for computational server resources and helpful
+comments on the manuscript. This work was not supported by external
+funding.
+
+\subsection*{Author Contributions}
+J.K.\ conceived and designed the study, performed all computational
+analyses, and wrote the manuscript. S.L.\ acquired and curated the
+public datasets. S.H.\ contributed to data interpretation. All authors
+reviewed the manuscript.
+
+% ============================================================
+% REFERENCES
+% ============================================================
+\bibliography{references}
+
+% ============================================================
+% FIGURE LEGENDS
+% ============================================================
+\clearpage
+\section*{Figure Legends}
+
+\subsection*{Figure 1. L1 RNA carries elevated \msix{} density.}
+
+\textbf{(a)} ECDF of per-read \msix{}/kb for young L1 (L1HS and
+L1PA1--3; $n = 2{,}267$), ancient L1 ($n = 34{,}225$), and non-L1
+transcripts ($n = 66{,}014$). Dotted vertical lines mark group medians
+(young 4.2, ancient 2.7, non-L1 1.6). L1 curves are right-shifted,
+indicating higher \msix{} density.
+%
+\textbf{(b)} Per-library \msix{}/kb for L1 versus non-L1 transcripts
+across 23 replicate libraries from nine cell lines, with L1 separated
+into young (triangles) and ancient (circles). Both age groups
+consistently fall above the $y = x$ diagonal, with young L1 showing
+the highest \msix{}/kb across all libraries.
+%
+\textbf{(c)} DRACH motif density versus \msix{} site density in L1 and
+non-L1 sequences. Each dot is one library's L1/non-L1 ratio; diamonds
+mark per-library means (1.21-fold for DRACH, 1.64-fold for \msix{}).
+\msix{}/kb enrichment exceeds DRACH density in all 23 libraries.
+%
+\textbf{(d)} Orthogonal validation using RNA004 chemistry and the
+Dorado basecaller. Violin plots of per-read \msix{}/kb for young
+L1, ancient L1, and non-L1 transcripts. L1 enrichment (1.5--1.8-fold,
+length-matched) and the Young${>}$Ancient gradient (1.81-fold) are
+reproduced. Among 539 position-reproducible \msix{} sites on L1
+($\geq$50\% of reads methylated at the same genomic position), 93\%
+occur at DRACH motifs.
+%
+\textbf{(e)} Correlation of per-bin \msix{} rate between Young and
+Ancient L1, mapped to L1 consensus coordinates. Each dot represents a
+50-nt consensus bin; dot size scales with the number of Ancient L1
+DRACH sites in that bin ($n = 112$ bins with $\geq$5 Young and
+$\geq$10 Ancient observations). The positive correlation (Spearman
+$\rho = 0.44$, $P = 1.3 \times 10^{-6}$) indicates conservation of
+positional \msix{} patterns across evolutionary age.
+%
+\textbf{(f)} Ancient L1 per-DRACH \msix{} rate as a function of Hamming
+distance from the nearest Young L1 \msix{}-positive 11-mer flanking
+context. DRACH sites with identical flanking sequences to Young L1
+hotspots (Hamming~$= 0$) show the highest methylation rate, with a
+monotonic decline as sequence divergence increases. Sites with $\leq$2
+mismatches are methylated at 2.0-fold higher rate than those with $>$2
+($P = 1.3 \times 10^{-96}$). Numbers above each bar indicate sample
+size. This gradient is consistent with METTL3 recognizing extended
+sequence context beyond the core DRACH pentamer.
+
+\subsection*{Figure 2. Arsenite triggers selective poly(A) shortening of non-embedded L1.}
+\textbf{(a)} ECDF of poly(A) tail length for L1 and non-L1
+transcripts in unstressed HeLa versus arsenite-treated HeLa-Ars. The L1
+Ars curve shifts leftward ($\Delta = -31$ nt, $P = 2.6 \times 10^{-17}$)
+while both non-L1 curves remain unchanged, consistent with L1-specific
+shortening. Arrow marks the shift in L1 median.
+%
+\textbf{(b)} Cross-cell-line validation. L1 loci detected exclusively in
+HeLa-Ars (``Ars-only loci'') were tracked across nine unstressed cell
+lines. Dot plot shows median poly(A) at these loci in each cell line
+(100--160 nt range). Dashed line: the same loci under arsenite (77.5 nt,
+$P = 2.2 \times 10^{-35}$), consistent with stress-induced shortening.
+%
+\textbf{(c)} Poly(A) distributions for ancient and young L1 under normal
+and arsenite conditions. Violins with jittered individual reads overlay.
+Ancient L1 show severe shortening ($\Delta = -33$ nt, $P = 1.7 \times
+10^{-18}$) while young L1 are unaffected ($\Delta = -0.1$ nt, not
+significant).
+%
+\textbf{(d)} Chromatin state modulates arsenite vulnerability. Paired
+violins (normal versus arsenite) with individual read overlays for
+ancient L1 grouped by ChromHMM chromatin state (HeLa-S3, E117). L1 in
+active regulatory chromatin (enhancers/promoters) show the strongest
+shortening ($\Delta = -73$ nt, enhancers $\Delta = -78$ nt), while
+transcribed and quiescent regions show moderate effects
+($\Delta \approx -25$ to $-30$ nt).
+%
+\textbf{(e)} Cycloheximide (CHX) rescue. Poly(A) distributions under
+mock, arsenite, and arsenite + CHX (which blocks stress granule
+assembly). Ars+CHX poly(A) (93.6 nt) is indistinguishable from
+mock (88.2 nt, $P = 0.66$), consistent with SG-dependent shortening.
+%
+\textbf{(f)} XRN1 knockdown effect on L1 proportion in two contexts.
+Under normal conditions, XRN1 KD increases L1 1.46-fold ($P = 2.0
+\times 10^{-11}$, $\chi^2$ test), consistent with XRN1-mediated L1 decay.
+Under arsenite, XRN1 KD has no additional effect (1.07-fold, $P =
+0.15$), indicating that arsenite-induced decay already operates through
+XRN1 (pathway convergence). Error bars: 95\% CI (Poisson model).
+
+\subsection*{Figure 3. \msix{} density is associated with L1 poly(A) retention under stress.}
+\textbf{(a)} ECDF of poly(A) length stratified by \msix{}/kb quartile
+and condition. Eight curves show Q1--Q4 for both HeLa (dashed, blue
+gradient) and HeLa-Ars (solid, wine gradient). Under normal conditions
+the quartile curves are closely clustered. Under stress, Q1 (low
+\msix{}) shifts leftward. Vertical dotted line marks the
+30-nt PABP dissociation threshold. Low-\msix{} reads fall below this
+threshold 2.0-fold more frequently than high-\msix{} reads under
+stress (Fisher's exact $P = 5.9 \times 10^{-11}$).
+%
+\textbf{(b)} Slope chart showing Pearson $r$ (\msix{}/kb vs.\ poly(A))
+under normal (open circles) versus stress (filled circles) for young L1,
+ancient L1, and all L1 combined. The \msix{}--poly(A) correlation
+appears under stress in ancient L1 ($r = 0.06 \to 0.18$,
+$P < 10^{-19}$), while young L1 shows no change ($r \approx 0.07$, ns).
+%
+\textbf{(c)} Stratification of L1 poly(A) under arsenite stress
+by \msix{} density and canonical polyadenylation signal (PAS) status.
+$2 \times 2$ heatmap shows median poly(A) length for ancient L1 reads
+(CpG averaged). Reads with both high \msix{} and canonical PAS retain
+the longest tails ($\sim$132~nt), while those with low \msix{} and
+absent PAS show the shortest ($\sim$63~nt), yielding a $\sim$69-nt
+range. Cell annotations show sample size and percentage of reads in the
+critically short zone ($<$30~nt, below the PABP dissociation threshold). HeLa-Ars data.
+
+\subsection*{Figure 4. Sequence features of young L1 confer stress immunity.}
+
+\textbf{(a)} Young versus ancient L1 comparison across five immunity-associated
+features, normalized to Young~L1 = 1.0. Bars show relative values; fold differences
+are annotated above. Absolute values are shown below bars. Young L1 carry higher
+\msix{}/kb (1.8-fold), full-length fraction (19.9-fold), EN domain retention
+(4.0-fold), consensus span (8.8-fold), and $3'$~UTR coverage (1.6-fold).
+%
+\textbf{(b)} Stress-induced poly(A) change ($\Delta$ = stressed $-$ unstressed
+median) for ancient L1 reads stratified by presence (green) or absence (red)
+of each young-like feature. Ancient elements possessing any single feature
+(full-length, EN domain, high \msix{}, or long consensus span) are immune to
+shortening (ns), whereas elements lacking the feature show significant
+shortening ($P < 0.001$). Exception: $3'$~UTR coverage alone does not protect
+($\Delta = -24.4$~nt, $P = 4.3 \times 10^{-7}$).
+%
+\textbf{(c)} Poly(A) tail length distributions of stressed ancient L1
+stratified by composite immunity score (0--3, one point each for
+full-length status, EN domain retention, and high \msix{}/kb).
+Median values and sample sizes are annotated.
+Dashed blue line: Young L1 stressed median (103~nt). Score~3 ancient
+elements exceed Young-like poly(A) retention (164~nt). Spearman $\rho = 0.112$,
+$P = 1.3 \times 10^{-8}$.
+%
+\textbf{(d)} DRACH (\msix{} methylation motif) and CpG (ZAP targeting motif)
+density across L1 functional domains. The EN domain combines the highest DRACH
+density (43.2/kb, 1.38-fold the L1 average) with near-complete CpG depletion
+(2.8/kb, obs/exp = 0.08), creating a region maximally accessible to METTL3
+while invisible to ZAP surveillance. HeLa-Ars data.
+
+\subsection*{Figure 5. Working model: \msix{} density and poly(A) retention under stress.}
+\textbf{(a)} State diagram of L1 poly(A) dynamics under normal versus
+arsenite stress. Under normal conditions (left), \msix{} density and
+poly(A) tail length are independently distributed ($r \approx 0$). Under
+arsenite stress (right), L1 RNA is routed through stress granules (SG)
+and P-bodies, where \msix{} density correlates with
+outcome. High-\msix{} L1 preferentially retains its poly(A) tail (teal),
+while low-\msix{} L1 is more likely to have poly(A) shortened below
+30~nt, approaching the PABP dissociation threshold (wine).
+Cycloheximide (CHX), which blocks SG assembly by trapping ribosomes on
+mRNAs, rescues poly(A) shortening (crossed-out SG,
+Fig.~2e), consistent with SG/P-body dependence of the shortening pathway.
+%
+\textbf{(b)} Sequence features determine L1 stress fate. Young,
+full-length L1 carry overlapping immunity features (full-length status,
+EN domain, high \msix{}/kb, ORF translation) that collectively prevent
+poly(A) shortening ($\Delta \approx 0$~nt). Ancient L1 that retain
+individual features (EN domain, high \msix{}) remain protected (score
+2--3). Progressive $5'$ truncation over evolutionary time strips these
+features, leaving structurally incomplete ancient fragments vulnerable
+to two independent decay pathways: \msix{}-dependent $3'$ poly(A)
+shortening ($\Delta = -34$ to $-53$~nt) and \msix{}-independent $5'$
+XRN1 decay (1.46-fold abundance increase upon knockdown). A composite
+immunity score (0--3) predicts median poly(A) under stress in a
+dose-dependent manner (82~nt at score~0 to 164~nt at score~3; Spearman
+$\rho = 0.112$, $P = 1.3 \times 10^{-8}$).
+
+\end{document}
