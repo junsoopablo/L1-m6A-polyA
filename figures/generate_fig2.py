@@ -56,8 +56,8 @@ df_chrom = pd.read_csv(f'{BASE}/topic_08_regulatory_chromatin/l1_chromhmm_annota
 # ═══════════════════════════════════════════
 # Panel (a): ECDF — L1 vs Control poly(A), HeLa vs Ars
 # ═══════════════════════════════════════════
-fig_a, ax = plt.subplots(figsize=(HALF_WIDTH, HALF_WIDTH * 0.80))
-panel_label(ax, 'a')
+fig_a, ax = plt.subplots(figsize=(HALF_WIDTH, PANEL_HEIGHT))
+panel_label(ax, 'b')  # new Fig 1b (was Fig 2a)
 
 l1_hela = df_l1[df_l1['cell_line'] == 'HeLa']['polya_length'].dropna().values
 l1_ars = df_l1[df_l1['cell_line'] == 'HeLa-Ars']['polya_length'].dropna().values
@@ -67,22 +67,22 @@ ctrl_ars = df_ctrl[df_ctrl['cell_line'] == 'HeLa-Ars']['polya_length'].dropna().
 xlim_polya = 300
 
 ecdf_plot(ax, np.clip(l1_hela, 0, xlim_polya), C_NORMAL,
-          f'L1 HeLa (n={len(l1_hela):,})', lw=1.2)
+          'L1 HeLa', lw=LW_DATA)
 ecdf_plot(ax, np.clip(l1_ars, 0, xlim_polya), C_STRESS,
-          f'L1 Arsenite (n={len(l1_ars):,})', lw=1.2)
+          'L1 Arsenite', lw=LW_DATA)
 if len(ctrl_hela) > 0:
     ecdf_plot(ax, np.clip(ctrl_hela, 0, xlim_polya), C_CTRL,
-              f'non-L1 HeLa (n={len(ctrl_hela):,})', lw=0.9, ls='--')
+              'non-L1 HeLa', lw=LW_DATA_SEC, ls='--')
 if len(ctrl_ars) > 0:
     ecdf_plot(ax, np.clip(ctrl_ars, 0, xlim_polya), C_GREY,
-              f'non-L1 Arsenite (n={len(ctrl_ars):,})', lw=0.9, ls='--')
+              'non-L1 Arsenite', lw=LW_DATA_SEC, ls='--')
 
 med_l1h = np.median(l1_hela)
 med_l1a = np.median(l1_ars)
 delta = med_l1a - med_l1h
-ax.annotate('', xy=(med_l1a, 0.5), xytext=(med_l1h, 0.5),
-              arrowprops=dict(arrowstyle='->', color=C_STRESS, lw=1.2))
-ax.text((med_l1h + med_l1a) / 2, 0.53,
+ax.annotate('', xy=(med_l1a, 0.35), xytext=(med_l1h, 0.35),
+              arrowprops=dict(arrowstyle='->', color=C_STRESS, lw=LW_DATA))
+ax.text((med_l1h + med_l1a) / 2, 0.37,
           f'$\\Delta$={delta:.0f} nt', ha='center', va='bottom',
           fontsize=FS_ANNOT, color=C_STRESS)
 
@@ -96,8 +96,8 @@ print(f"fig2a: {len(l1_hela):,} L1 HeLa + {len(l1_ars):,} L1 Ars + {len(ctrl_hel
 # ═══════════════════════════════════════════
 # Panel (c): Violin+strip — Ancient vs Young immunity
 # ═══════════════════════════════════════════
-fig_b, ax = plt.subplots(figsize=(HALF_WIDTH * 1.1, HALF_WIDTH * 0.85))
-panel_label(ax, 'c')
+fig_b, ax = plt.subplots(figsize=(HALF_WIDTH, PANEL_HEIGHT))
+panel_label(ax, 'c')  # new Fig 1c (was Fig 2c)
 
 anc_hela = df_l1[(~df_l1['is_young']) & (df_l1['cell_line'] == 'HeLa')]['polya_length'].dropna().values
 anc_ars = df_l1[(~df_l1['is_young']) & (df_l1['cell_line'] == 'HeLa-Ars')]['polya_length'].dropna().values
@@ -125,7 +125,7 @@ add_strip(ax, data_b, pos_b, colors=colors_b,
 
 for pos, data in zip(pos_b, data_b):
     if len(data) > 5:
-        median_line(ax, data, pos, width=0.18, lw=1.0)
+        median_line(ax, data, pos, width=0.18, lw=LW_MEDIAN)
 
 ax.set_xticks(pos_b)
 ax.set_xticklabels([
@@ -148,11 +148,6 @@ if len(yng_hela) > 5 and len(yng_ars) > 5:
     ax.text(2.15, 276, f'ns  $\\Delta$={delta_yng:.0f} nt', ha='center', va='bottom',
               fontsize=FS_ANNOT_SMALL, color='#888888')
 
-# n labels
-for pos, n in zip(pos_b, [len(anc_hela), len(anc_ars), len(yng_hela), len(yng_ars)]):
-    ax.text(pos, 292, f'n={n:,}', ha='center', va='bottom',
-            fontsize=FS_ANNOT_SMALL, color='#666666')
-
 save_figure(fig_b, f'{OUTDIR}/fig2c')
 print(f"fig2c: {len(anc_hela):,} + {len(anc_ars):,} ancient, {len(yng_hela):,} + {len(yng_ars):,} young")
 
@@ -160,34 +155,26 @@ print(f"fig2c: {len(anc_hela):,} + {len(anc_ars):,} ancient, {len(yng_hela):,} +
 # ═══════════════════════════════════════════
 # Panel (b): Cleveland dot plot — Cross-CL validation
 # ═══════════════════════════════════════════
-fig_c, ax = plt.subplots(figsize=(HALF_WIDTH, HALF_WIDTH * 0.80))
+fig_c, ax = plt.subplots(figsize=(HALF_WIDTH, PANEL_HEIGHT))
 panel_label(ax, 'b')
 
 cl_sorted = df_crosscl.sort_values('median_polya')
 y_pos_c = np.arange(len(cl_sorted))
 
 for i, (_, row) in enumerate(cl_sorted.iterrows()):
-    ax.hlines(i, 0, row['median_polya'], color='#E8E8E8', lw=1, zorder=1)
+    ax.hlines(i, 0, row['median_polya'], color='#E8E8E8', lw=LW_REF, zorder=1)
     ax.scatter(row['median_polya'], i, color=C_NORMAL, s=S_POINT, zorder=3,
                  edgecolors='white', linewidths=0.4)
-    ax.text(row['median_polya'] + 3, i, f'{row["median_polya"]:.0f}',
-              ha='left', va='center', fontsize=FS_ANNOT_SMALL, color=C_TEXT)
 
 ars_median = 77.5
-ax.axvline(x=ars_median, color=C_STRESS, linewidth=1.0, ls='--', zorder=2)
-ax.text(ars_median - 3, len(cl_sorted) - 0.3,
-         f'HeLa Arsenite\n{ars_median:.0f} nt', ha='right', va='top',
-         fontsize=FS_ANNOT_SMALL, color=C_STRESS)
+ax.axvline(x=ars_median, color=C_STRESS, linewidth=LW_DATA_SEC, ls='--', zorder=2)
+ax.text(ars_median + 2, len(cl_sorted) - 0.5, 'HeLa\nArsenite',
+        ha='left', va='top', fontsize=FS_ANNOT_SMALL, color=C_STRESS)
 
 ax.set_yticks(y_pos_c)
 ax.set_yticklabels(cl_sorted['cell_line'].values)
 ax.set_xlabel('Median poly(A) length at arsenite-only loci (nt)')
 ax.set_xlim(0, 180)
-
-ax.text(0.97, 0.03,
-          r'$\Delta$=$-$48 nt' + '\n' + r'$P$=2.2$\times$10$^{-35}$',
-         transform=ax.transAxes, ha='right', va='bottom',
-         fontsize=FS_ANNOT_SMALL, color='#888888')
 
 save_figure(fig_c, f'{OUTDIR}/fig2b')
 print(f"fig2b: {len(cl_sorted)} cell lines")
@@ -196,14 +183,14 @@ print(f"fig2b: {len(cl_sorted)} cell lines")
 # ═══════════════════════════════════════════
 # Panel (d): ChromHMM paired violins — per chromatin group
 # ═══════════════════════════════════════════
-fig_d, ax = plt.subplots(figsize=(HALF_WIDTH * 1.2, HALF_WIDTH * 0.85))
-panel_label(ax, 'd')
+fig_d, ax = plt.subplots(figsize=(HALF_WIDTH, PANEL_HEIGHT))
+panel_label(ax, 'f')  # new Fig 1f (was Fig 2d)
 
 chrom_ancient = df_chrom[(df_chrom['l1_age'] == 'ancient') &
                           (df_chrom['cellline'].isin(['HeLa', 'HeLa-Ars']))].copy()
 
 state_order = ['Enhancer', 'Promoter', 'Transcribed', 'Quiescent']
-state_labels = ['Enh.', 'Prom.', 'Txn.', 'Quies.']
+state_labels = ['Enhancer', 'Promoter', 'Transcribed', 'Quiescent']
 state_base_colors = [C_L1, C_L1, C_GREY, C_GREY]
 
 positions_normal = []
@@ -247,7 +234,7 @@ add_strip(ax, data_stress, positions_stress, colors=colors_stress_list,
 
 for pos, data in zip(positions_normal + positions_stress, data_normal + data_stress):
     if len(data) > 10:
-        median_line(ax, data, pos, width=0.12, lw=1.0)
+        median_line(ax, data, pos, width=0.12, lw=LW_MEDIAN)
 
 for i, st in enumerate(state_order):
     if len(data_normal[i]) > 10 and len(data_stress[i]) > 10:
@@ -268,7 +255,7 @@ ax.set_ylim(0, 295)
 from matplotlib.patches import Patch
 legend_elements = [Patch(facecolor=C_NORMAL, alpha=0.4, label='Normal'),
                    Patch(facecolor=C_STRESS, alpha=0.4, label='Arsenite')]
-ax.legend(handles=legend_elements, fontsize=FS_ANNOT_SMALL, loc='lower right')
+ax.legend(handles=legend_elements, fontsize=FS_ANNOT_SMALL, loc='upper left')
 
 save_figure(fig_d, f'{OUTDIR}/fig2d')
 print(f"fig2d: {sum(len(d) for d in data_normal):,} normal + {sum(len(d) for d in data_stress):,} stress chromatin reads")

@@ -48,8 +48,9 @@ for r, m6a_label in [(1, 'high'), (0, 'low')]:
 range_nt = matrix[1, 1] - matrix[0, 0]
 print(f"  Range (best - worst): {range_nt:.0f} nt")
 
-fig, ax = plt.subplots(figsize=(HALF_WIDTH * 0.95, HALF_WIDTH * 0.80))
-panel_label(ax, 'c')
+# Now placed side-by-side with decay zone bar → use HALF_WIDTH
+fig, ax = plt.subplots(figsize=(HALF_WIDTH, PANEL_HEIGHT))
+panel_label(ax, 'c')  # new Fig 2c
 
 im = ax.imshow(matrix, cmap='viridis', aspect='auto',
                vmin=50, vmax=140, origin='lower')
@@ -77,10 +78,7 @@ cbar = fig.colorbar(im, ax=ax, fraction=0.046, pad=0.04)
 cbar.set_label('Median poly(A) (nt)', fontsize=FS_ANNOT)
 cbar.ax.tick_params(labelsize=FS_ANNOT)
 
-# Range annotation as title
-ax.set_title(f'Arsenite stress \u2014 {range_nt:.0f}-nt range', fontsize=FS_ANNOT, pad=8)
 
-fig.tight_layout()
 save_figure(fig, f'{OUTDIR}/fig3c')
 print("fig3c saved.")
 

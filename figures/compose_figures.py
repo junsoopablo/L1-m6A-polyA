@@ -11,7 +11,7 @@ import subprocess, os, re
 FIGDIR = os.path.dirname(os.path.abspath(__file__))
 os.chdir(FIGDIR)
 
-TOTAL_WIDTH = 183  # mm (Nature double column)
+TOTAL_WIDTH = 165  # mm (matches LaTeX textwidth at 1in margins — no scaling)
 GAP = 4            # mm between panels
 
 
@@ -108,12 +108,13 @@ def compile_and_rename(texfile, figname):
 
 
 # ══════════════════════════════════════════════
-# Figure 1: [a | b] / [c | d] / [e | f]
+# Figure 1 (NEW): m6A enrichment + arsenite shortening + mechanism
+# [a=old1a | b=old2a] / [c=old2c | d=old2e] / [e=old2f | f=old2d]
 # ══════════════════════════════════════════════
-print("Fig 1:")
-h1, row1 = calc_row_height(['fig1a.pdf', 'fig1b.pdf'], TOTAL_WIDTH, GAP)
-h2, row2 = calc_row_height(['fig1c.pdf', 'fig1d.pdf'], TOTAL_WIDTH, GAP)
-h3, row3 = calc_row_height(['fig1e.pdf', 'fig1f.pdf'], TOTAL_WIDTH, GAP)
+print("Fig 1 (new):")
+h1, row1 = calc_row_height(['fig1a.pdf', 'fig2a.pdf'], TOTAL_WIDTH, GAP)
+h2, row2 = calc_row_height(['fig2c.pdf', 'fig2e.pdf'], TOTAL_WIDTH, GAP)
+h3, row3 = calc_row_height(['fig2f.pdf', 'fig2d.pdf'], TOTAL_WIDTH, GAP)
 print(f"  Row 1: h={h1:.1f}mm — " + ", ".join(f"{f}={w:.1f}mm" for f, w in row1))
 print(f"  Row 2: h={h2:.1f}mm — " + ", ".join(f"{f}={w:.1f}mm" for f, w in row2))
 print(f"  Row 3: h={h3:.1f}mm — " + ", ".join(f"{f}={w:.1f}mm" for f, w in row3))
@@ -124,63 +125,17 @@ with open('compose_fig1.tex', 'w') as f:
 compile_and_rename('compose_fig1.tex', 'fig1')
 
 # ══════════════════════════════════════════════
-# Figure 2: [a | b] / [c | d] / [e | f]
+# Figure 2 (NEW): m6A-poly(A) coupling under stress
+# [a=ECDF | b=slope | c=heatmap] — single row, 3 columns
 # ══════════════════════════════════════════════
-print("\nFig 2:")
-h1, row1 = calc_row_height(['fig2a.pdf', 'fig2b.pdf'], TOTAL_WIDTH, GAP)
-h2, row2 = calc_row_height(['fig2c.pdf', 'fig2d.pdf'], TOTAL_WIDTH, GAP)
-h3, row3 = calc_row_height(['fig2e.pdf', 'fig2f.pdf'], TOTAL_WIDTH, GAP)
+print("\nFig 2 (new):")
+h1, row1 = calc_row_height(['fig3a.pdf', 'fig3b.pdf'], TOTAL_WIDTH, GAP)
 print(f"  Row 1: h={h1:.1f}mm — " + ", ".join(f"{f}={w:.1f}mm" for f, w in row1))
-print(f"  Row 2: h={h2:.1f}mm — " + ", ".join(f"{f}={w:.1f}mm" for f, w in row2))
-print(f"  Row 3: h={h3:.1f}mm — " + ", ".join(f"{f}={w:.1f}mm" for f, w in row3))
 
-tex2 = make_tex([row1, row2, row3])
+tex2 = make_tex([row1])
 with open('compose_fig2.tex', 'w') as f:
     f.write(tex2)
 compile_and_rename('compose_fig2.tex', 'fig2')
-
-# ══════════════════════════════════════════════
-# Figure 3: [a | b] / [c] (c centered at half-width)
-# ══════════════════════════════════════════════
-print("\nFig 3:")
-h1, row1 = calc_row_height(['fig3a.pdf', 'fig3b.pdf'], TOTAL_WIDTH, GAP)
-# For row 2: center fig3c at ~65% width to reduce vertical gap
-half_w = (TOTAL_WIDTH - GAP) * 0.65
-w_c, h_c = get_pdf_dims('fig3c.pdf')
-aspect_c = w_c / h_c
-row2_h = half_w / aspect_c
-row2 = [('fig3c.pdf', half_w)]
-print(f"  Row 1: h={h1:.1f}mm — " + ", ".join(f"{f}={w:.1f}mm" for f, w in row1))
-print(f"  Row 2: h={row2_h:.1f}mm — fig3c.pdf={half_w:.1f}mm (centered)")
-
-# Custom TeX for fig3 with centered row 2
-lines = [
-    r'\documentclass[border=1mm]{standalone}',
-    r'\usepackage{graphicx}',
-    r'\begin{document}%',
-    rf'\begin{{minipage}}{{{TOTAL_WIDTH}mm}}%',
-]
-# Row 1
-for pi, (fname, wmm) in enumerate(row1):
-    lines.append(rf'\begin{{minipage}}[b]{{{wmm:.1f}mm}}%')
-    lines.append(rf'  \includegraphics[width=\textwidth]{{{fname}}}%')
-    lines.append(r'\end{minipage}%')
-    if pi < len(row1) - 1:
-        lines.append(rf'\hspace{{{GAP}mm}}%')
-lines.append('')
-lines.append(r'\vspace{1.5mm}')
-lines.append('')
-# Row 2 centered
-lines.append(r'\centering')
-lines.append(rf'\begin{{minipage}}[b]{{{half_w:.1f}mm}}%')
-lines.append(rf'  \includegraphics[width=\textwidth]{{fig3c.pdf}}%')
-lines.append(r'\end{minipage}%')
-lines.append(r'\end{minipage}%')
-lines.append(r'\end{document}')
-tex3 = '\n'.join(lines)
-with open('compose_fig3.tex', 'w') as f:
-    f.write(tex3)
-compile_and_rename('compose_fig3.tex', 'fig3')
 
 # ══════════════════════════════════════════════
 # Figure 4: [a | b] / [c | d]

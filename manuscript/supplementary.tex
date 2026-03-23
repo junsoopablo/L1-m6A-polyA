@@ -8,6 +8,7 @@
 \usepackage{setspace}
 \doublespacing
 \usepackage{graphicx}
+\usepackage{float}
 \graphicspath{{figures/}}
 \usepackage{amsmath}
 \usepackage{natbib}
@@ -17,15 +18,11 @@
 \usepackage{booktabs}
 \usepackage{xcolor}
 \usepackage{colortbl}
-\usepackage{longtable}
 \usepackage{array}
 
 % --- Custom commands ---
 \newcommand{\msix}{m$^6$A}
-
-\newcommand{\polyA}{poly(A)}
 \newcommand{\LONE}{LINE-1}
-\newcommand{\todo}[1]{\textcolor{red}{[TODO: #1]}}
 
 \title{Supplementary Information\\[6pt]
 Poly(A) tail retention of LINE-1 transcripts under arsenite stress covaries with \msix{} density and structural completeness}
@@ -39,235 +36,107 @@ Poly(A) tail retention of LINE-1 transcripts under arsenite stress covaries with
 % ============================================================
 \section*{Supplementary Figure S1: L1 Expression Landscape}
 
-\begin{figure}[htbp]
+\begin{figure}[H]
 \centering
 \includegraphics[width=\textwidth]{figS1.pdf}
 \caption{\textbf{L1 expression landscape across nine human cell lines.}
-\textbf{(a)}~Heatmap of L1 subfamily composition. Ancient elements (L1MC, L1ME, L1M\_other) dominate across all cell lines (63--79\%).
-\textbf{(b)}~Scatter plot of total L1 reads vs.\ unique loci (log-log scale) revealing sublinear scaling (loci $\propto$ reads$^{0.76}$), indicating locus-level saturation at higher sequencing depths. Dot colour encodes young L1 percentage.
-\textbf{(c)}~Violin distributions of L1 read lengths per cell line. Dashed line marks 1~kb, above which 3$'$ bias is expected.
-\textbf{(d)}~Dumbbell plot of per-locus detection rates for young (green) vs.\ ancient (brown) L1. Young elements are detected at $\sim$2.4$\times$ higher rates per locus, consistent with their higher transcriptional activity.}
+\textbf{(a)}~Heatmap of L1 subfamily composition. Ancient elements dominate across all cell lines (63--79\%).
+\textbf{(b)}~Total L1 reads vs.\ unique loci (log-log scale).
+\textbf{(c)}~Violin distributions of L1 read lengths per cell line.
+\textbf{(d)}~Per-locus detection rates for young vs.\ ancient L1.}
 \end{figure}
 
 % ============================================================
-\section*{Supplementary Figure S2: L1 Poly(A) Tail Cross-Cell-Line Variation}
+\clearpage
+\section*{Supplementary Figure S2: Exon-Embedded L1 and Baseline \msix{}--Poly(A)}
 
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=\textwidth]{figS2.pdf}
-\caption{\textbf{L1 poly(A) tail cross-cell-line variation.}
-\textbf{(a)}~Cumulative distribution functions (ECDFs) of poly(A) tail lengths across all nine cell lines (plus HeLa-Ars). HeLa (blue) and HeLa-Ars (wine) are highlighted; other cell lines shown in grey. HeLa-Ars shows a clear leftward shift ($\Delta$\,=\,$-31$~nt).
-\textbf{(b)}~Scatter of median L1 vs.\ non-L1 poly(A) per cell line, with colour encoding the L1 minus non-L1 difference. All cell lines lie above the diagonal, showing universal L1 poly(A) lengthening (+22--56~nt).
-\textbf{(c)}~Heatmap of median poly(A) length for the top 20 hotspot loci across 9 cell lines (grey = undetected). 8/20 hotspots are expressed in all cell lines, indicating a core set of ubiquitously transcribed L1 loci.}
-\end{figure}
-
-% ============================================================
-\section*{Supplementary Figure S3: Host Gene-Embedded L1 and Loci Sensitivity Analysis}
-
-\begin{figure}[htbp]
+\begin{figure}[H]
 \centering
 \includegraphics[width=\textwidth]{figS3.pdf}
-\caption{\textbf{Exon-embedded L1 characterization and non-embedded L1 loci sensitivity analysis.}
-\textbf{(a)}~Median poly(A) length for non-embedded and exon-embedded L1 under normal and arsenite conditions (HeLa). Non-embedded L1 shows arsenite-induced shortening ($\Delta = -31$~nt, ***), while embedded L1 is unaffected ($\Delta = -4$~nt, ns). Error bars omitted; $n$ values shown below each bar.
-\textbf{(b)}~Median poly(A) length by \msix{}/kb quartile under baseline (non-stress) conditions across all nine cell lines. The four quartiles are indistinguishable ($r = -0.003$, ns), confirming that the \msix{}--poly(A) association emerges only under stress (cf.\ Fig.~3).
-\textbf{(c)}~Lollipop plot of non-embedded L1 arsenite poly(A) shortening sensitivity. Progressive removal of top-contributing loci strengthens the effect (from $-37.4$ to $-43.3$~nt). Singleton loci show the most extreme shortening ($-51.3$~nt), consistent with a genome-wide phenomenon.
-\textbf{(d)}~Donut chart of loci sharing between HeLa-Ars-only (2{,}268), shared (652), and HeLa-only (1{,}577) categories. Genomic context (intronic fraction, young \%) is indistinguishable across categories ($\chi^2$ $P$\,=\,0.43).}
+\caption{\textbf{Exon-embedded L1 are protected and baseline \msix{}--poly(A) is uncorrelated.}
+\textbf{(a)}~Non-embedded L1 shows arsenite-induced shortening ($\Delta = -31$~nt), while embedded L1 is unaffected ($\Delta = -4$~nt, ns).
+\textbf{(b)}~Median poly(A) by \msix{}/kb quartile under baseline conditions across nine cell lines. The four quartiles are indistinguishable ($r = -0.003$, ns), confirming that the \msix{}--poly(A) association emerges only under stress.}
 \end{figure}
 
 % ============================================================
-\section*{Supplementary Figure S4: \msix{} Spatial Distribution Within L1}
+\clearpage
+\section*{Supplementary Figure S3: Regulatory L1 Vulnerability}
 
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=\textwidth]{figS4.pdf}
-\caption{\textbf{\msix{} spatial distribution within L1 elements.}
-\textbf{(a)}~Decomposition of L1 body vs.\ flanking-region \msix{}. Connected dot pairs show \msix{} level at DRACH motifs (body 0.96$\times$), DRACH motif density (body 1.37$\times$), and resulting \msix{}/kb (body 1.32$\times$). Higher body \msix{}/kb is driven by motif density, not \msix{} level.
-\textbf{(b)}~L1-internal \msix{}/kb along the L1 consensus sequence for ancient elements, binned by five functional regions. ORF1-derived fragments (highlighted) carry the highest \msix{} density (2.43/kb), exceeding the ORF2 region (2.03--2.15/kb). 5$'$ and 3$'$ UTR regions show near-zero L1-internal \msix{}/kb due to short L1 overlap ($<$250~bp), precluding reliable density estimation.}
-\end{figure}
-
-% ============================================================
-\section*{Supplementary Figure S5: Regulatory L1 Vulnerability and \msix{}-Dependent Protection}
-
-\begin{figure}[htbp]
+\begin{figure}[H]
 \centering
 \includegraphics[width=\textwidth]{figS5.pdf}
-\caption{\textbf{Regulatory L1 elements are selectively vulnerable to arsenite-induced poly(A) shortening, and \msix{}-associated poly(A) retention.}
-\textbf{(a)}~Cumulative distribution of poly(A) tail lengths for regulatory (enhancer + promoter, solid) and non-regulatory (dashed) ancient L1. Under arsenite stress, regulatory L1 shows dramatic shortening ($\Delta$\,=\,$-73$~nt, $P = 2.0 \times 10^{-12}$), approximately three times the non-regulatory effect ($\Delta$\,=\,$-24$~nt).
-\textbf{(b)}~Fraction of reads with critically short poly(A) tails ($<$30~nt) by ChromHMM chromatin state. Under stress (red), 44--48\% of enhancer and promoter L1 reads fall below this threshold, compared with 20--21\% for transcribed and quiescent regions.
-\textbf{(c)}~\msix{}-matched comparison of regulatory vs.\ non-regulatory L1 median poly(A) under arsenite stress. Reads were binned into \msix{}/kb quartiles. Connected dot pairs show that regulatory L1 is 49--84~nt shorter than non-regulatory at equivalent \msix{} levels (Q1--Q4, all $P$\,$<$\,0.01), indicating that chromatin-associated vulnerability is independent of \msix{} density.
-\textbf{(d)}~Within regulatory L1 under stress, cumulative distributions by \msix{} quartile. Q4 (highest \msix{}) shows a median of 59~nt vs.\ Q1 (lowest) at 28~nt ($\Delta$\,=\,+31~nt, $P = 2.9 \times 10^{-4}$), showing a dose-dependent \msix{}--poly(A) association even within the most vulnerable chromatin compartment.}
-\end{figure}
-
-% ============================================================
-\section*{Supplementary Figure S6: Bidirectional Regulatory L1 Stress Response}
-
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=\textwidth]{figS6.pdf}
-\caption{\textbf{Bidirectional poly(A) response of regulatory L1 elements under arsenite stress.}
-\textbf{(a)}~Gene-level scatter of poly(A) change ($\Delta$ = arsenite $-$ unstressed median) vs.\ average \msix{}/kb for 69 ancient regulatory L1 host genes with reads in both conditions. Each point represents one host gene. Point size is proportional to total read count. Colours indicate response direction: shortened (wine, $n = 37$), stable (grey, $n = 11$), and lengthened (teal, $n = 21$). \msix{}/kb correlates with direction (Spearman $\rho = 0.38$, $P = 0.001$): high-\msix{} L1 tend toward poly(A) lengthening (e.g., \emph{HDAC5}, \emph{PON2}, \emph{BRCA1}), while low-\msix{} L1 tend toward shortening (e.g., \emph{CKS2}, \emph{GSDMD}).
-\textbf{(b)}~Per-read scatter of \msix{}/kb vs.\ poly(A) tail length for ancient L1 at enhancer loci. HeLa (steel, $n = 1{,}489$) shows a flat relationship, whereas HeLa-Ars (wine, $n = 108$) displays a significant positive correlation ($r = 0.35$, $P = 2.3 \times 10^{-4}$), indicating that the \msix{}--poly(A) association is strongest at enhancer elements under stress. Shaded region marks the critical threshold ($<$30~nt).}
+\caption{\textbf{Regulatory L1 elements are selectively vulnerable to arsenite-induced poly(A) shortening.}
+\textbf{(a)}~ECDF of poly(A) for regulatory vs.\ non-regulatory ancient L1. Regulatory L1 shows $\Delta = -73$~nt under stress, approximately three times the non-regulatory effect ($\Delta = -24$~nt).
+\textbf{(b)}~Fraction of reads with poly(A) $<$30~nt by ChromHMM state.
+\textbf{(c)}~\msix{}-matched comparison: regulatory L1 is 49--84~nt shorter than non-regulatory at equivalent \msix{} levels.
+\textbf{(d)}~Within stressed regulatory L1, Q4 (highest \msix{}) shows median 59~nt vs.\ Q1 at 28~nt ($P = 2.9 \times 10^{-4}$).}
 \end{figure}
 
 % ============================================================
 \clearpage
-\section*{Supplementary Figure S7: CHX Rescue --- Detailed Breakdown (see also Fig.~2e)}
+\section*{Supplementary Figure S4: Cross-Cell-Line \msix{} Consistency}
 
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=\textwidth]{figS7.pdf}
-\caption{\textbf{Cycloheximide completely rescues arsenite-induced L1 poly(A) shortening.}
-Data from additional conditions within the same ONT DRS study \citep{deMuro2024} (PRJNA842344), reanalysed with our two-stage L1 filter.
-\textbf{(a)}~ECDF of poly(A) tail length for L1 reads under mock (dashed blue, $n = 345$), arsenite (wine, $n = 549$), and arsenite~+~CHX (peach, $n = 1{,}335$) conditions. CHX prevents stress granule assembly by trapping ribosomes on mRNAs. The Ars+CHX curve (median = 93.6~nt) is indistinguishable from mock (88.2~nt, $P = 0.66$), while arsenite alone shortens poly(A) to 65.9~nt ($P = 0.005$). Arrow indicates CHX rescue.
-\textbf{(b)}~Median poly(A) by L1 age and condition. Ancient L1 show full rescue under Ars+CHX ($\Delta = +29.3$~nt vs.\ arsenite, $P = 1.3 \times 10^{-4}$). Young L1 have very small sample sizes in this dataset ($n < 15$).
-\textbf{(c)}~CHX rescue magnitude stratified by \msix{}/kb (split at median). Both low- and high-\msix{} reads show comparable rescue ($\sim$21--27~nt), suggesting that the SG/P-body-dependent shortening acts independently of \msix{} density.}
-\end{figure}
-
-% ============================================================
-\clearpage
-\section*{Supplementary Figure S8: L1 Overlap Fraction Classifier and Internal-A Validation}
-
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=\textwidth]{figS8.pdf}
-\caption{\textbf{L1 overlap fraction predicts arsenite vulnerability independently of internal adenine content.}
-\textbf{(a)}~Threshold sweep of L1 overlap fraction (fraction of each read aligned to a single L1 element). Reads above the threshold (cyan, structurally intact L1 with strong poly(A) signal) show progressively less poly(A) shortening, reaching $\Delta \approx 0$~nt at threshold 0.7. Reads below the threshold (rose) show increasing shortening. Vertical dotted line marks the 0.7 threshold used in subsequent analyses.
-\textbf{(b)}~Baseline poly(A) tail length (normal HeLa, no stress) by overlap fraction group. High-overlap reads ($>$0.7) have \emph{shorter} median poly(A) tails (115~nt) than low-overlap reads (123~nt), ruling out the possibility that internal adenine-rich sequences at the L1 3$'$ end artificially inflate poly(A) estimates.
-\textbf{(c)}~Sensitivity analysis excluding L1 elements with A-rich 3$'$ ends. The difference in arsenite response between high- and low-overlap reads ($|\Delta\Delta|$) is maintained or strengthened when excluding elements with the highest adenine fraction in the last 30~bp of the L1 3$'$ end ($|\Delta\Delta| = 27$--53~nt after exclusion vs.\ 27~nt baseline), showing that the high-overlap resistance is not driven by internal-A confounding.
-\textbf{(d)}~Scatter of L1 3$'$ A-fraction (last 30~bp) vs.\ poly(A) tail length for high-overlap reads ($>$0.7). Neither normal (Spearman $r = 0.043$) nor arsenite ($r = 0.018$) conditions show correlation, confirming no relationship between genomic A-content and poly(A) estimates.}
-\end{figure}
-
-% ============================================================
-\clearpage
-\section*{Supplementary Figure S9: Exon Overlap Threshold Validation}
-
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=\textwidth]{figS9.pdf}
-\caption{\textbf{Validation of the 100~bp protein-coding exon overlap threshold.}
-The two-stage L1 filter applies five sequential criteria (10\% L1 TE overlap, no splice junctions, best alignment score, strand match, and exon overlap $<$100~bp). To assess whether the 100~bp exon overlap threshold is appropriate, we recomputed protein-coding exon overlaps for all 94{,}708 stage~1 L1 reads from six HeLa/HeLa-Ars samples.
-\textbf{(a)}~Histogram of maximum protein-coding exon overlap per read (log scale). Non-embedded L1 reads (rose, $n = 8{,}358$) are concentrated at 0~bp overlap, while rejected reads (grey, $n = 86{,}350$) span a broad range. Dashed line marks the 100~bp threshold.
-\textbf{(b)}~Fraction of reads passing \emph{all} stage~2 filters by exon overlap bin. The pass rate drops sharply from 47.4\% at 0--24~bp to 2.1\% at 25--49~bp and $<$1\% above 50~bp, indicating that reads with even modest exon overlap are overwhelmingly rejected by other filters (splice junctions, alignment quality). Exon overlap is therefore a conservative safety net, not the primary discriminator.
-\textbf{(c)}~Poly(A) tail length for non-embedded L1 reads stratified by exon overlap and condition. Clean reads (0~bp overlap, $n = 7{,}742$) show arsenite-induced shortening ($\Delta = -35$~nt, ***) indistinguishable from near-threshold reads (50--99~bp, $n = 882$, $\Delta = -15$~nt, *), with no significant difference between groups under normal conditions ($P = 0.17$). The consistent biological signal across overlap bins confirms that near-threshold non-embedded L1 reads are bona fide L1.
-\textbf{(d)}~Threshold sweep showing the percentage of stage~1 reads passing the exon overlap criterion alone (rose curve) vs.\ all five filters combined (dotted blue line, 8.8\%). The 100~bp threshold (red dot, 81.8\%) lies well above the ``all filters'' asymptote, confirming that shifting the threshold by $\pm$50~bp would change $<$3\% of non-embedded L1 reads.}
-\end{figure}
-
-% ============================================================
-\clearpage
-\section*{Supplementary Figure S10: Cross-Cell-Line \msix{} Consistency}
-
-\begin{figure}[htbp]
+\begin{figure}[H]
 \centering
 \includegraphics[width=\textwidth]{figS10.pdf}
 \caption{\textbf{L1 \msix{} patterns are consistent across human cell lines.}
-\textbf{(a)}~Median \msix{}/kb for young (green) and ancient (brown) L1 across nine
-cell lines. All nine cell lines show
-significantly higher \msix{}/kb in young L1 (ratio range 1.38--1.81, all
-$P < 10^{-7}$). Error bars indicate interquartile range. The
-Young${>}$Ancient gradient has a coefficient of variation of 0.075 across
-cell lines.
-\textbf{(b)}~Pairwise Spearman rank correlation of subfamily-level median
-\msix{}/kb between cell lines. Each cell contains the Spearman $\rho$
-computed over the 10 most abundant L1 subfamilies. Median $\rho = 0.85$
-(range 0.52--0.98), indicating that subfamily-intrinsic sequence features
-dominate over cell-type-specific effects.
-\textbf{(c)}~Per-locus \msix{}/kb consistency between cell lines.
-For 502 loci detected in $\geq$2 cell lines with $\geq$3 reads each,
-pairwise Spearman correlations range from 0.62 to 0.84 (median $\rho = 0.73$,
-all 36 pairs $\rho > 0.6$). Heatmap shows the full $9 \times 9$ pairwise
-correlation matrix.
-\textbf{(d)}~Per-cell-line median \msix{}/kb with replicate-level variation.
-Each bar represents a cell line median. Individual replicate medians are
-shown as dots. Within-cell-line replicate CV ranges from 0.004 (HCT116)
-to 0.148 (MCF7), comparable to the between-cell-line CV of 0.122.}
+\textbf{(a)}~Median \msix{}/kb for young and ancient L1 across nine cell lines. All show the Young${>}$Ancient gradient (CV = 0.075).
+\textbf{(b)}~Pairwise Spearman correlation of subfamily-level \msix{}/kb (median $\rho = 0.85$).
+\textbf{(c)}~Per-locus consistency (median pairwise $\rho = 0.73$).
+\textbf{(d)}~Per-cell-line replicate variation.}
 \end{figure}
 
 % ============================================================
 \clearpage
-\section*{Supplementary Figure S11: Illumina RNA-seq Validation of L1 Expression Under Arsenite}
+\section*{Supplementary Figure S5: Illumina RNA-seq Validation}
 
-\begin{figure}[htbp]
+\begin{figure}[H]
 \centering
 \includegraphics[width=\textwidth]{figS11.pdf}
 \caption{\textbf{Illumina RNA-seq confirms net ancient L1 RNA decrease under arsenite stress.}
-Independent validation using ribo-depleted RNA-seq from HeLa cells treated with
-sodium arsenite (GSE278916, $n=2$ biological replicates per condition).
-\textbf{(a)}~Gene-normalized L1 fold change (arsenite/untreated) computed using
-fractional multi-mapper assignment and median-of-ratios size factors (see Methods). Young L1 subfamilies (L1HS--L1PA2) share
-$>$97\% sequence identity, making short-read quantification unreliable.
-Ancient L1 subfamilies, with greater inter-subfamily divergence, show a
-robust net decrease (FC = 0.925). Individual replicate values shown as dots.
-\textbf{(b)}~Differential expression analysis of L1
-subfamilies with EM-based multi-mapper resolution (see Methods). Among 67 significant
-subfamilies ($P_{\text{adj}} < 0.05$), 53 are downregulated and 14
-upregulated. The majority of confidently quantified (ancient) subfamilies
-show consistent downregulation. Young subfamilies (triangles) have low
-statistical power owing to multi-mapping ambiguity (L1HS
-$P_{\text{adj}} = 0.21$, L1PA2 $P_{\text{adj}} = 0.10$).
-\textbf{(c)}~Arsenite stress response validation. Canonical stress-responsive genes
-show expected strong upregulation (HSPA6, 9{,}603$\times$, HSPA1A, 82$\times$,
-ATF3, 50$\times$), confirming effective arsenite treatment.}
+\textbf{(a)}~Gene-normalized L1 fold change. Ancient L1 show robust net decrease (FC = 0.925).
+\textbf{(b)}~Differential expression: 53 of 67 significant ancient L1 subfamilies are downregulated.
+\textbf{(c)}~Arsenite treatment validation: canonical stress genes show expected upregulation.}
 \end{figure}
 
 % ============================================================
 \clearpage
-\section*{Supplementary Figure S12: Per-Read \msix{}/kb--Poly(A) Correlation Details}
+\section*{Supplementary Figure S6: Per-Read \msix{}/kb--Poly(A) Scatter}
 
-\begin{figure}[htbp]
+\begin{figure}[H]
 \centering
 \includegraphics[width=\textwidth]{figS12.pdf}
-\caption{\textbf{Per-read \msix{}/kb versus poly(A) length under normal and stress conditions.}
-\textbf{(a)}~Scatter plots of \msix{}/kb versus poly(A) length for L1 reads in HeLa (left, normal) and HeLa-Ars (right, stress). Each point represents a single L1 read. Regression lines with 95\% CI bands are overlaid. Under normal conditions the relationship is flat ($r \approx 0$). Under stress, a positive slope emerges, indicating that higher \msix{} density associates with longer poly(A) tails specifically during stress.
-\textbf{(b)}~Median $\Delta$poly(A) (stress $-$ normal) by \msix{}/kb quartile. Q1 (low \msix{}) shows the greatest poly(A) shortening ($-42$~nt), while Q4 (high \msix{}) retains poly(A) ($-16$~nt, not significant). Per-read Spearman trend: $\rho = 0.201$, $P = 3.3 \times 10^{-26}$, confirming a dose-dependent association between \msix{} density and poly(A) protection under stress.}
+\caption{\textbf{Per-read \msix{}/kb versus poly(A) length.}
+\textbf{(a)}~Scatter plots for HeLa (normal) and HeLa-Ars (stress) with regression lines. Under normal conditions the relationship is flat; under stress a positive slope emerges.
+\textbf{(b)}~Median $\Delta$poly(A) by \msix{}/kb quartile. Q1 shows $-42$~nt shortening, Q4 retains poly(A) ($-16$~nt, ns). Spearman $\rho = 0.201$, $P = 3.3 \times 10^{-26}$.}
 \end{figure}
 
 % ============================================================
 \clearpage
-\section*{Supplementary Figure S13: Threshold-Free \msix{} Enrichment Analysis}
+\section*{Supplementary Figure S7: lncRNA Control}
 
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=0.6\textwidth]{figS13.pdf}
-\caption{\textbf{L1 \msix{} sites are disproportionately high-confidence.}
-For each probability threshold, the fraction of \msix{} candidate sites retained at or above that threshold was computed separately for L1 and non-L1 reads, and the L1/non-L1 ratio of these fractions is plotted ($y$-axis). At the lowest threshold (all sites included), the ratio is 1.0 by construction; as stringency increases, L1 sites survive at a higher rate than non-L1 sites, reaching 1.35-fold at 50\% probability (grey dot) and 1.49-fold at 80\% probability (orange dot, the primary threshold used in this study). This monotonic increase confirms that L1 \msix{} calls are enriched for genuine, high-probability modifications rather than low-confidence noise. Note that this metric differs from the absolute \msix{}/kb ratio (1.79-fold at the 80\% threshold; Fig.~1a), which additionally reflects higher DRACH motif density in L1 sequences.}
-\end{figure}
-
-% ============================================================
-\clearpage
-\section*{Supplementary Figure S14: L1 3$'$ Positioning and PAS-Dependent Arsenite Vulnerability}
-
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=\textwidth]{figS14.pdf}
-\caption{\textbf{L1 reads that terminate at L1's own polyadenylation signal are protected from arsenite-induced poly(A) shortening.}
-\textbf{(a)}~Cumulative distribution of the distance from the L1 element to the read's 3$'$ end (i.e., the poly(A) tail). Young L1 reads cluster near the 3$'$ boundary (62\% within 50~bp, indicating use of L1's own PAS), whereas ancient L1 reads are more dispersed (35\% within 50~bp), reflecting 5$'$ genomic truncation and frequent read-through to downstream PAS.
-\textbf{(b)}~Median poly(A) tail length for ancient non-embedded L1 reads stratified by 3$'$ positioning (HeLa/HeLa-Ars). Reads where L1 extends to the 3$'$ end (``own PAS'', left) show modest arsenite-induced shortening ($\Delta = -21$~nt, $P = 0.01$), whereas reads relying on a downstream PAS (right) show twice the shortening ($\Delta = -41$~nt, $P = 1.3 \times 10^{-19}$). Error bars: bootstrap 95\% CI of the median.
-\textbf{(c)}~Fraction of reads at the 3$'$ end by L1 age (young vs.\ ancient) and genomic context (intergenic vs.\ intronic). Young L1 reads terminate at L1's 3$'$ boundary regardless of context ($\sim$60--64\%), while ancient L1 reads show lower proportions (33--38\%), consistent with their shorter genomic L1 elements (median 359~bp vs.\ 6{,}018~bp for young). Error bars: Wilson 95\% CI.
-Although the overall proportion of own-PAS reads did not change under stress ($\chi^2$ $P = 0.61$), reads with critically short poly(A) ($<$30~nt) were disproportionately downstream-PAS reads: under arsenite, 77.6\% of critically short reads relied on a downstream PAS, compared with 63.3\% of surviving reads---a gap twice that observed under normal conditions (71.4\% vs.\ 65.1\%).}
-\end{figure}
-
-% ============================================================
-\clearpage
-\section*{Supplementary Figure S15: lncRNA Control Comparison}
-
-\begin{figure}[htbp]
+\begin{figure}[H]
 \centering
 \includegraphics[width=\textwidth]{figS15.pdf}
 \caption{\textbf{Annotated lncRNAs do not recapitulate L1-specific poly(A) shortening or \msix{} enrichment.}
-\textbf{(a)}~Split violin plots of poly(A) tail length for lncRNAs, L1, and mRNA controls under mock (blue) and arsenite (orange) conditions. L1 transcripts carry longer baseline poly(A) than lncRNAs (median 121.9 vs.\ 90.0~nt, $P = 5.0 \times 10^{-20}$) and undergo pronounced arsenite-induced shortening ($\Delta = -31.0$~nt), whereas lncRNAs show negligible change ($\Delta = -2.9$~nt, Cohen's $d = -0.06$).
-\textbf{(b)}~Bar chart of median poly(A) change ($\Delta = \text{Ars} - \text{HeLa}$) across transcript categories, including non-L1 genomic fragments (reads mapping to intronic or intergenic regions outside annotated L1 elements). Only L1---particularly ancient elements---shows substantial shortening; lncRNAs, mRNAs, and non-L1 genomic fragments are unaffected.
-\textbf{(c)}~Boxplot of \msix{} density (sites/kb, probability $\geq 0.80$). L1 carries higher \msix{} density than lncRNAs (2.02 vs.\ 1.59 sites/kb, 1.27-fold, $P = 1.9 \times 10^{-73}$).
-\textbf{(d)}~Scatter plots of \msix{}/kb versus poly(A) tail length under arsenite for lncRNA, L1, and mRNA. The \msix{}--poly(A) correlation is substantially stronger for L1 ($\rho = 0.201$) than for lncRNA ($\rho = 0.065$) or mRNA ($\rho = 0.084$), indicating that the \msix{}-dependent poly(A) protection is L1-specific rather than a general non-coding RNA property. Read-length-matched analyses yielded consistent results ($\Delta$ poly(A) $P = 2.9 \times 10^{-9}$; \msix{}/kb 1.25-fold).}
+\textbf{(a)}~Poly(A) distributions: L1 shortens under arsenite ($\Delta = -31$~nt) while lncRNAs are unaffected ($\Delta = -2.9$~nt).
+\textbf{(b)}~Median $\Delta$poly(A) across transcript categories.
+\textbf{(c)}~\msix{} density: L1 carries 1.27-fold higher \msix{} than lncRNAs.
+\textbf{(d)}~\msix{}--poly(A) correlation under stress: L1 $\rho = 0.201$ vs.\ lncRNA $\rho = 0.065$.}
 \end{figure}
 
+% ============================================================
 \clearpage
-\section*{Supplementary Figure S16: L1 Mutation Sensitivity Map}
+\section*{Supplementary Figure S8: Sequence Features of Young L1 Confer Stress Immunity}
 
-\begin{figure}[htbp]
+\begin{figure}[H]
 \centering
-\includegraphics[width=\textwidth]{fig4a_mutation_sensitivity.pdf}
-\caption{\textbf{Mutation sensitivity profile along the L1HS consensus identifies the ORF2 EN domain as a vulnerability hotspot.}
-Per-position mutation rates for stress-sensitive (bottom poly(A) quartile, red) and stress-resistant (top quartile, green) ancient L1 loci aligned to the L1HS consensus (L19088.1, 6{,}064~bp). Rates are smoothed with a 50-bp window. Shaded red regions mark the 21 windows where sensitive loci carry significantly higher mutation rates (Bonferroni $P < 0.05$, Fisher's exact test on 100-bp sliding windows). All significant windows map to ORF2, concentrated in the endonuclease (EN) domain ($\sim$2{,}100--3{,}250). Sensitive loci carry 4--6\% higher mutation rates at these positions. Domain boundaries: $5'$~UTR (1--908), ORF1 (909--1{,}990), ORF2 EN (1{,}991--2{,}708), ORF2 RT (2{,}709--4{,}149), ORF2 C-rich (4{,}150--5{,}817), $3'$~UTR (5{,}818--6{,}064). 508 ancient L1 loci with $\geq$5 reads in both conditions; alignment rate 21.7\% (ancient L1 divergence from L1HS limits coverage).}
+\includegraphics[width=\textwidth]{fig4.pdf}
+\caption{\textbf{Sequence features of young L1 confer stress immunity.}
+\textbf{(a)}~Young vs.\ ancient L1 comparison across five immunity-associated features.
+\textbf{(b)}~Stress-induced poly(A) change for ancient L1 stratified by presence/absence of each feature. Ancient elements possessing any single feature are immune to shortening.
+\textbf{(c)}~Composite immunity score (0--3) predicts poly(A) retention dose-dependently (Spearman $\rho = 0.169$, $P = 5.5 \times 10^{-18}$).
+\textbf{(d)}~DRACH and CpG density across L1 functional domains. The EN domain combines the highest DRACH density with near-complete CpG depletion.}
 \end{figure}
 
 % ============================================================
@@ -277,7 +146,7 @@ Per-position mutation rates for stress-sensitive (bottom poly(A) quartile, red) 
 % ── Table S1 ──
 \begin{table}[htbp]
 \centering
-\caption{\textbf{Cell line and sequencing summary.} Eleven human cell lines profiled by ONT direct RNA sequencing. Read counts reflect L1 reads passing the two-stage filter (10\% overlap + CIGAR/exon/strand refinement).}
+\caption{\textbf{Cell line and sequencing summary.} Eleven human cell lines profiled by ONT direct RNA sequencing.}
 \label{tab:s1}
 \begin{tabular}{lrrrrrrr}
 \toprule
@@ -303,33 +172,8 @@ SH-SY5Y  & 3 &  1{,}083 &    361 &    757 &  95 &  3.1 & 1{,}137 \\
 % ── Table S2 ──
 \begin{table}[htbp]
 \centering
-\caption{\textbf{L1 subfamily composition across cell lines.} Percentage of L1 reads belonging to each of 10 major subfamily groups. Ancient elements (L1MC, L1ME, L1M\_other) collectively account for 63--79\% of reads across all cell lines.}
+\caption{\textbf{OLS regression: \msix{}--poly(A) coupling model.} Poly(A) tail length as dependent variable ($n = 4{,}970$, $R^2 = 0.039$). The stress$\times$\msix{}/kb interaction (bold) indicates stress-specific coupling.}
 \label{tab:s2}
-\small
-\begin{tabular}{l*{10}{r}}
-\toprule
-Cell Line & L1HS & PA1-3 & PA4-8 & PA9+ & PB & MC & ME & M\_oth & HAL1 & Other \\
-\midrule
-A549     & 0.9 &  4.2 &  8.1 & 4.2 & 1.9 & 17.0 & 26.9 & 30.6 & 4.9 & 1.3 \\
-H9       & 1.2 &  4.6 &  7.1 & 4.0 & 2.8 & 15.0 & 24.9 & 35.4 & 2.8 & 2.2 \\
-HEYA8    & 0.0 & 13.2 & 11.4 & 4.1 & 2.5 & 13.3 & 22.2 & 29.9 & 2.6 & 0.9 \\
-Hct116   & 0.4 &  3.0 &  8.4 & 3.3 & 3.0 & 20.2 & 25.9 & 30.7 & 3.4 & 1.9 \\
-HeLa     & 0.7 &  4.6 & 12.2 & 5.7 & 3.9 & 13.0 & 22.1 & 30.7 & 6.0 & 1.1 \\
-HeLa-Ars & 0.9 &  5.0 & 11.4 & 6.0 & 3.5 & 13.8 & 24.1 & 28.6 & 5.4 & 1.2 \\
-HepG2    & 0.2 &  4.0 & 23.4 & 3.6 & 2.1 & 10.7 & 21.7 & 31.0 & 2.2 & 1.2 \\
-K562     & 0.4 &  4.1 &  8.3 & 4.5 & 2.8 & 14.3 & 26.5 & 32.6 & 4.8 & 1.8 \\
-MCF7     & 1.8 &  5.5 &  7.3 & 3.8 & 2.6 & 19.5 & 26.6 & 28.6 & 3.4 & 1.0 \\
-MCF7-EV  & 2.8 & 15.4 & 10.7 & 3.5 & 3.1 & 14.2 & 26.4 & 20.7 & 2.2 & 1.1 \\
-SH-SY5Y  & 0.1 &  3.1 &  6.3 & 4.5 & 3.1 & 15.1 & 30.7 & 32.6 & 3.6 & 1.0 \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-% ── Table S3 ──
-\begin{table}[htbp]
-\centering
-\caption{\textbf{OLS regression: \msix{}-poly(A) coupling model.} Full ordinary least squares regression with poly(A) tail length as the dependent variable ($n = 4{,}970$, $R^2 = 0.039$, adjusted $R^2 = 0.038$). The stress$\times$\msix{}/kb interaction term (bold) indicates stress-specific \msix{}--poly(A) association. \msix{} explains a modest but significant fraction of poly(A) variance (partial $R^2$ for stress$\times$\msix{}/kb = 0.003; all \msix{}-related terms collectively add $\Delta R^2 = 0.018$ beyond a baseline model of read length and stress).}
-\label{tab:s3}
 \begin{tabular}{lrrrrr}
 \toprule
 Variable & Coef. & SE & $t$ & $P$ & 95\% CI \\
@@ -346,37 +190,11 @@ Stress $\times$ Young & 21.40 & 12.00 &  1.78 & 0.075   & [$-2.1$, 44.9] \\
 \end{tabular}
 \end{table}
 
-% ── Table S4 ──
+% ── Table S3 ──
 \begin{table}[htbp]
 \centering
-\caption{\textbf{Intergenic versus intronic L1 comparison.} Key metrics compared between L1 reads mapping to intronic regions (overlapping annotated genes) and intergenic regions (no gene overlap). MAPQ values were extracted from HeLa and HeLa-Ars BAM files (ancient L1 only). $P$ values are from Mann--Whitney $U$ tests.}
-\label{tab:s4}
-\begin{tabular}{lrrr}
-\toprule
-Metric & Intronic & Intergenic & $P$ \\
-\midrule
-Total reads & 35{,}652 (61.1\%) & 22{,}664 (38.9\%) & --- \\
-Young L1 (\%) & 5.9 & 6.4 & --- \\
-Unique L1 loci & 11{,}219 & 5{,}581 & --- \\
-MAPQ, median (ancient, HeLa) & 60 & 60 & $4.3 \times 10^{-3}$ \\
-MAPQ $\geq$ 60 (\%, ancient, HeLa) & 81.1 & 83.7 & --- \\
-MAPQ = 0 (\%, ancient, HeLa) & 3.4 & 2.1 & --- \\
-Read length, median bp (ancient) & 907 & 867 & 0.35 \\
-Poly(A) length, median nt (ancient) & 113.5 & 111.5 & 0.70 \\
-\msix{}/kb, median (ancient) & 2.20 & 2.43 & $8.2 \times 10^{-19}$ \\
-Arsenite $\Delta$poly(A), ancient intronic & 97.0 $\to$ 63.4 & $\Delta = -33.5$ nt & $6.8 \times 10^{-21}$ \\
-Arsenite $\Delta$poly(A), ancient intergenic & 110.6 $\to$ 62.1 & $\Delta = -48.6$ nt & $2.7 \times 10^{-15}$ \\
-Intergenic fraction across cell lines & \multicolumn{2}{c}{median 37.5\%, range 31.4--46.0\%} & --- \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-% ── Table S5 ──
-\begin{table}[htbp]
-\centering
-\caption{\textbf{Threshold robustness of the \msix{}--poly(A) interaction.} OLS stress$\times$\msix{}/kb interaction term computed at five \msix{} probability thresholds. The primary analysis uses the 80\% threshold, which maximises DRACH-motif specificity in orthogonal RNA004
-validation (see Methods). The interaction is significant at all thresholds tested, confirming that the \msix{}--poly(A) coupling is not an artifact of threshold choice.}
-\label{tab:s5}
+\caption{\textbf{Threshold robustness of the \msix{}--poly(A) interaction.} The interaction is significant at all five thresholds tested.}
+\label{tab:s3}
 \begin{tabular}{lrrrr}
 \toprule
 Probability threshold & $\beta_3$ (stress$\times$\msix{}/kb) & SE & $P$ & Model $R^2$ \\
@@ -390,51 +208,22 @@ $\geq$ 90\% & 5.52 & 1.45 & $1.5\times10^{-4}$ & 0.037 \\
 \end{tabular}
 \end{table}
 
-% ── Table S6 ──
+% ── Table S4 ──
 \begin{table}[htbp]
 \centering
-\caption{\textbf{Critically short poly(A) threshold sensitivity.} Fraction of stressed ancient L1 reads with poly(A) below each threshold, stratified by \msix{}/kb quartile (Q1: lowest, Q4: highest). The Q1/Q4 enrichment is significant at all thresholds tested, demonstrating that the association between low \msix{} and critically short poly(A) is robust to threshold choice.}
-\label{tab:s6}
-\begin{tabular}{lrrrrrr}
-\toprule
-Threshold (nt) & Q1 ($<$thr) & Q4 ($<$thr) & Ratio & OR & $P$ (Fisher) \\
-\midrule
-20  & 22.4\% & 10.0\% & 2.24 & 2.60 & $1.5\times10^{-9}$ \\
-25  & 25.5\% & 12.3\% & 2.07 & 2.44 & $1.6\times10^{-9}$ \\
-30  & 30.6\% & 15.3\% & 2.00 & 2.45 & $5.9\times10^{-11}$ \\
-35  & 36.2\% & 17.8\% & 2.04 & 2.63 & $8.2\times10^{-14}$ \\
-40  & 40.1\% & 20.4\% & 1.96 & 2.61 & $1.4\times10^{-14}$ \\
-50  & 44.3\% & 23.9\% & 1.86 & 2.54 & $9.3\times10^{-15}$ \\
-60  & 48.4\% & 28.9\% & 1.68 & 2.31 & $6.6\times10^{-13}$ \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-% ── Table S7 ──
-\begin{table}[htbp]
-\centering
-\caption{\textbf{Per-locus aggregation increases the \msix{}--poly(A)
-effect size.} Reads were grouped by genomic L1 locus and summarised
-as median \msix{}/kb and median poly(A) per locus. OLS and weighted
-least-squares (WLS; weight = reads per locus) regressions were
-performed on loci meeting the minimum read depth. Stressed = HeLa-Ars;
-unstressed = HeLa. Per-read baselines (grey rows) are shown for
-comparison.}
-\label{tab:s7}
+\caption{\textbf{Per-locus aggregation increases the \msix{}--poly(A) effect size.} Per-read baselines (grey) shown for comparison.}
+\label{tab:s4}
 \begin{tabular}{llrrrrr}
 \toprule
 Subgroup & Unit & $N$ & Spearman $\rho$ & OLS $R^2$ & WLS $R^2$ & $P$ \\
 \midrule
 \rowcolor{gray!15} All L1, stressed & read & 2{,}733 & 0.201 & 0.031 & --- & $1.6\times10^{-26}$ \\
 \rowcolor{gray!15} Ancient, stressed & read & 2{,}534 & 0.204 & 0.033 & --- & $3.2\times10^{-25}$ \\
-\rowcolor{gray!15} Ancient, stressed, regulatory & read & 358 & 0.217 & 0.073 & --- & $3.4\times10^{-5}$ \\
 \addlinespace
-All L1, stressed, $\geq$3 reads & locus & 144 & 0.308 & 0.071 & 0.108 & $1.8\times10^{-4}$ \\
 Ancient, stressed, $\geq$3 reads & locus & 136 & 0.335 & 0.084 & 0.124 & $7.5\times10^{-5}$ \\
 Ancient, stressed, $\geq$5 reads & locus & 49 & 0.513 & 0.120 & 0.176 & $1.7\times10^{-4}$ \\
 \addlinespace
 Ancient, unstressed, $\geq$3 reads & locus & 140 & 0.039 & 0.003 & --- & 0.65 \\
-Young, stressed, $\geq$3 reads & locus & 8 & $-$0.095 & 0.022 & --- & 0.82 \\
 \bottomrule
 \end{tabular}
 \end{table}

@@ -23,8 +23,9 @@ import numpy as np
 
 # ── Figure dimensions (Nature: 183mm double, 89mm single) ──
 MM = 1 / 25.4
-FULL_WIDTH  = 183 * MM   # ~7.20 in  (Nature double column)
-HALF_WIDTH  = 89 * MM    # ~3.50 in  (Nature single column)
+FULL_WIDTH  = 165 * MM   # ~6.50 in  (matches LaTeX textwidth at 1in margins)
+HALF_WIDTH  = 80 * MM    # ~3.15 in  (half of FULL_WIDTH minus gap)
+PANEL_HEIGHT = HALF_WIDTH * 0.85  # ~2.98 in — standard panel height for uniform compose scaling
 
 # ── Color palette — muted, colorblind-safe ──
 # Based on Paul Tol "muted" + hand-tuned for L1 manuscript context
@@ -45,6 +46,16 @@ FS_ANNOT_SMALL = 7      # smaller annotations, significance
 FS_LEGEND      = 7.5    # in-plot legends
 FS_LEGEND_SMALL = 6.5   # compact legends
 FS_CBAR        = 7.5    # colorbar labels
+
+# ── Line widths (scaled for FULL_WIDTH=165mm) ──
+LW_AXIS        = 0.6    # axes & spines
+LW_TICK        = 0.5    # tick marks
+LW_DATA        = 1.0    # data lines (ECDF, regression)
+LW_DATA_SEC    = 0.8    # secondary data lines (dashed, reference)
+LW_REF         = 0.6    # reference/guide lines (y=1, x=0)
+LW_BRACKET     = 0.6    # significance brackets
+LW_MEDIAN      = 0.8    # median lines in violins
+LW_CONNECT     = 0.5    # connecting lines (paired dots)
 
 # ── Scatter marker sizes ──
 S_POINT        = 30     # standard data point
@@ -73,24 +84,24 @@ def setup_style():
         'legend.borderpad': 0.3,
         'legend.handlelength': 1.2,
 
-        # Lines — visible at print resolution
-        'axes.linewidth': 0.8,
-        'xtick.major.width': 0.7,
-        'ytick.major.width': 0.7,
-        'xtick.minor.width': 0.4,
-        'ytick.minor.width': 0.4,
-        'xtick.major.size': 3.0,
-        'ytick.major.size': 3.0,
-        'xtick.minor.size': 2.0,
-        'ytick.minor.size': 2.0,
+        # Lines — calibrated for FULL_WIDTH=165mm
+        'axes.linewidth': LW_AXIS,
+        'xtick.major.width': LW_TICK,
+        'ytick.major.width': LW_TICK,
+        'xtick.minor.width': LW_TICK * 0.7,
+        'ytick.minor.width': LW_TICK * 0.7,
+        'xtick.major.size': 2.5,
+        'ytick.major.size': 2.5,
+        'xtick.minor.size': 1.5,
+        'ytick.minor.size': 1.5,
         'xtick.direction': 'out',
         'ytick.direction': 'out',
         'xtick.top': False,          # SciencePlots sets True; disable for clean L-shape
         'ytick.right': False,        # SciencePlots sets True; disable for clean L-shape
         'xtick.minor.visible': False, # SciencePlots enables; disable to avoid top-edge dots
         'ytick.minor.visible': False,
-        'lines.linewidth': 1.2,
-        'lines.markersize': 4.5,
+        'lines.linewidth': LW_DATA,
+        'lines.markersize': 4.0,
 
         # Spines — clean L-shape
         'axes.spines.top': False,
@@ -102,6 +113,9 @@ def setup_style():
         'xtick.color': C_TEXT,
         'ytick.color': C_TEXT,
         'axes.edgecolor': C_TEXT,
+
+        # Layout — constrained_layout for stable panel spacing
+        'figure.constrained_layout.use': True,
 
         # Output
         'figure.dpi': 150,       # screen preview
@@ -125,7 +139,7 @@ def panel_label(ax, letter, x=-0.18, y=1.08):
 
 def significance_bracket(ax, x1, x2, y, h, text, fontsize=7, color='#373737'):
     """Draw a thin significance bracket."""
-    ax.plot([x1, x1, x2, x2], [y, y+h, y+h, y], lw=0.7, color=color)
+    ax.plot([x1, x1, x2, x2], [y, y+h, y+h, y], lw=LW_BRACKET, color=color)
     ax.text((x1+x2)/2, y+h, text, ha='center', va='bottom',
             fontsize=fontsize, color=color)
 

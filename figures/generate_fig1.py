@@ -58,20 +58,19 @@ ctrl_m6a = df_ctrl_cache['m6a_per_kb'].dropna().values
 # ═══════════════════════════════════════════
 # Panel (a): ECDF m6A/kb
 # ═══════════════════════════════════════════
-fig_a, ax = plt.subplots(figsize=(HALF_WIDTH, HALF_WIDTH * 0.75))
+fig_a, ax = plt.subplots(figsize=(HALF_WIDTH, PANEL_HEIGHT))
 panel_label(ax, 'a')
 
 all_m6a = np.concatenate([young_m6a, ancient_m6a, ctrl_m6a])
 xlim_a = np.ceil(np.percentile(all_m6a, 99.5))
 xlim_a = max(8, min(15, xlim_a))
-ecdf_plot(ax, np.clip(young_m6a, 0, xlim_a), C_YOUNG, f'Young (n={len(young_m6a):,})')
-ecdf_plot(ax, np.clip(ancient_m6a, 0, xlim_a), C_ANCIENT, f'Ancient (n={len(ancient_m6a):,})')
-ecdf_plot(ax, np.clip(ctrl_m6a, 0, xlim_a), C_CTRL, f'non-L1 (n={len(ctrl_m6a):,})')
+ecdf_plot(ax, np.clip(young_m6a, 0, xlim_a), C_YOUNG, 'Young')
+ecdf_plot(ax, np.clip(ancient_m6a, 0, xlim_a), C_ANCIENT, 'Ancient')
+ecdf_plot(ax, np.clip(ctrl_m6a, 0, xlim_a), C_CTRL, 'non-L1')
 
 for data, color in [(young_m6a, C_YOUNG), (ancient_m6a, C_ANCIENT), (ctrl_m6a, C_CTRL)]:
     med = np.median(data)
     ax.axvline(med, color=color, ls=':', lw=0.7, alpha=0.7)
-    ax.text(med, 0.02, f'{med:.1f}', ha='center', va='bottom', fontsize=FS_LEGEND_SMALL, color=color)
 
 ax.set_xlim(0, xlim_a); ax.set_ylim(0, 1.02)
 ax.set_xlabel('m6A sites per kb'); ax.set_ylabel('Cumulative fraction')
@@ -82,7 +81,7 @@ print(f"fig1a: {len(young_m6a)+len(ancient_m6a)+len(ctrl_m6a):,} reads")
 # ═══════════════════════════════════════════
 # Panel (b): Per-library m6A/kb scatter — Young vs Ancient L1
 # ═══════════════════════════════════════════
-fig_b, ax = plt.subplots(figsize=(HALF_WIDTH, HALF_WIDTH * 0.75))
+fig_b, ax = plt.subplots(figsize=(HALF_WIDTH, PANEL_HEIGHT))
 panel_label(ax, 'b')
 
 # Compute per-group Young/Ancient median m6A/kb
@@ -119,7 +118,7 @@ all_y = np.concatenate([df_b_young['young_m6a'].dropna().values,
                         df_b_anc['ancient_m6a'].dropna().values])
 lim_lo = min(all_x.min(), all_y.min()) - 0.5
 lim_hi = max(all_x.max(), all_y.max()) + 0.5
-ax.plot([lim_lo, lim_hi], [lim_lo, lim_hi], color='#C7C7C7', lw=0.8, ls='--')
+ax.plot([lim_lo, lim_hi], [lim_lo, lim_hi], color='#C7C7C7', lw=LW_REF, ls='--')
 ax.set_xlim(lim_lo, lim_hi); ax.set_ylim(lim_lo, lim_hi)
 ax.set_xlabel('non-L1 m6A/kb'); ax.set_ylabel('L1 m6A/kb')
 ax.legend(fontsize=FS_LEGEND_SMALL, loc='lower right')
@@ -130,7 +129,7 @@ print(f"fig1b: Young {len(df_b_young)} lib, Ancient {len(df_b_anc)} lib")
 # ═══════════════════════════════════════════
 # Panel (c): DRACH motif density vs m6A density (fold-enrichment comparison)
 # ═══════════════════════════════════════════
-fig_c, ax = plt.subplots(figsize=(HALF_WIDTH, HALF_WIDTH * 0.75))
+fig_c, ax = plt.subplots(figsize=(HALF_WIDTH, PANEL_HEIGHT))
 panel_label(ax, 'c')
 
 # Per-library ratios
@@ -142,7 +141,7 @@ positions = [0, 1]
 # Paired dot plot: connect DRACH and m6A ratios for each library
 for i in range(len(motif_ratios)):
     ax.plot(positions, [motif_ratios[i], m6a_ratios[i]], color='#BDC3C7',
-            lw=0.6, zorder=1, alpha=0.6)
+            lw=LW_CONNECT, zorder=1, alpha=0.6)
 
 ax.scatter([positions[0]] * len(motif_ratios), motif_ratios,
            s=18, color=C_CTRL, edgecolors='white', linewidths=0.4, zorder=4, alpha=0.8)
@@ -150,7 +149,7 @@ ax.scatter([positions[1]] * len(m6a_ratios), m6a_ratios,
            s=18, color=C_L1, edgecolors='white', linewidths=0.4, zorder=4, alpha=0.8)
 
 # Reference line at 1.0
-ax.axhline(1.0, color='#CCCCCC', lw=0.7, ls='--')
+ax.axhline(1.0, color='#CCCCCC', lw=LW_REF, ls='--')
 
 # Mean markers (diamond)
 mean_motif = np.mean(motif_ratios)
@@ -166,16 +165,6 @@ ax.text(positions[0] - 0.15, mean_motif, f'{mean_motif:.2f}x', ha='right', va='c
 ax.text(positions[1] + 0.15, mean_m6a, f'{mean_m6a:.2f}x', ha='left', va='center',
         fontsize=FS_ANNOT, fontweight='bold', color=C_L1)
 
-# Compact note on enrichment
-ax.text(1.03, 0.08, 'm6A > DRACH in all libraries',
-        transform=ax.transAxes, ha='left', va='bottom',
-        fontsize=FS_ANNOT_SMALL, color='#888888')
-
-# All lines go upward?
-n_up = sum(m6a_ratios > motif_ratios)
-ax.text(0.5, 0.01, f'{n_up}/{len(motif_ratios)} libraries',
-        transform=ax.transAxes, ha='center', va='bottom',
-        fontsize=FS_ANNOT_SMALL, color='#888888')
 
 ax.set_xticks(positions)
 ax.set_xticklabels(['DRACH\nmotifs/kb', 'm6A\nsites/kb'], fontsize=FS_ANNOT)
@@ -188,7 +177,7 @@ print(f"fig1c: DRACH ratio={mean_motif:.3f}, m6A ratio={mean_m6a:.3f}")
 # ═══════════════════════════════════════════
 # Panel (d): Threshold-free enrichment sweep
 # ═══════════════════════════════════════════
-fig_d, ax = plt.subplots(figsize=(HALF_WIDTH, HALF_WIDTH * 0.75))
+fig_d, ax = plt.subplots(figsize=(HALF_WIDTH, PANEL_HEIGHT))
 prob = df_hist['prob_value'].values
 l1_cumrev = np.cumsum(df_hist['l1_count'].values[::-1])[::-1]
 ctrl_cumrev = np.cumsum(df_hist['ctrl_count'].values[::-1])[::-1]
@@ -196,7 +185,7 @@ ratio = (l1_cumrev / l1_cumrev[0]) / (ctrl_cumrev / ctrl_cumrev[0])
 
 ax.plot(prob, ratio, color=C_L1, lw=1.0, zorder=2)
 ax.fill_between(prob, 1.0, ratio, where=(ratio>1), alpha=0.12, color=C_L1, lw=0)
-ax.axhline(1.0, color='#CCCCCC', lw=0.7, ls='--')
+ax.axhline(1.0, color='#CCCCCC', lw=LW_REF, ls='--')
 
 # Mark primary threshold (204/255 = 80%) and alternative
 for thr, tx, ty in [(204, 8, -3), (128, -12, 8)]:

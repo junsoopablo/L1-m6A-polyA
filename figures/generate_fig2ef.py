@@ -23,8 +23,8 @@ XRN1 = '/vault/external-datasets/2026/PRJNA842344_HeLA_under_oxidative-stress_RN
 # ═══════════════════════════════════════════
 # Panel (e): CHX rescue — poly(A) recovery
 # ═══════════════════════════════════════════
-fig_e, ax = plt.subplots(figsize=(HALF_WIDTH * 0.85, HALF_WIDTH * 0.85))
-panel_label(ax, 'e')
+fig_e, ax = plt.subplots(figsize=(HALF_WIDTH, PANEL_HEIGHT))
+panel_label(ax, 'd')  # new Fig 1d (was Fig 2e)
 
 df_chx = pd.read_csv(f'{XRN1}/ars_chx_analysis.tsv', sep='\t')
 df_chx = df_chx.dropna(subset=['polya_length'])
@@ -63,7 +63,7 @@ add_strip(ax, chx_data, chx_positions, colors=chx_colors, size=1.5, alpha=0.15, 
 
 meds = []
 for pos, data in zip(chx_positions, chx_data):
-    m = median_line(ax, data, pos, width=0.15, lw=1.2)
+    m = median_line(ax, data, pos, width=0.15, lw=LW_DATA)
     meds.append(m)
 
 ax.set_xticks(chx_positions)
@@ -85,11 +85,6 @@ significance_bracket(ax, 0, 2, 258, 5,
                      f'$\\Delta$={delta_chx:+.0f} {significance_text(p_chx)}',
                      fontsize=6.5)
 
-# n annotations
-for i, d in enumerate(chx_data):
-    ax.text(i, -15, f'n={len(d):,}', ha='center', fontsize=5.5, color='#888888',
-            clip_on=False)
-
 save_figure(fig_e, f'{OUTDIR}/fig2e')
 print(f"fig2e: mock={len(chx_data[0])}, Ars={len(chx_data[1])}, "
       f"Ars+CHX={len(chx_data[2])}")
@@ -101,8 +96,8 @@ print(f"  Ars delta={delta_ars:.1f} (p={p_ars:.2e}), CHX delta={delta_chx:.1f} (
 # Show fold-change of XRN1 KD in Normal vs Arsenite context
 # If both use the same pathway, XRN1 KD effect vanishes under Ars
 # ═══════════════════════════════════════════
-fig_f, ax = plt.subplots(figsize=(HALF_WIDTH * 0.85, HALF_WIDTH * 0.85))
-panel_label(ax, 'f')
+fig_f, ax = plt.subplots(figsize=(HALF_WIDTH, PANEL_HEIGHT))
+panel_label(ax, 'e')  # new Fig 1e (was Fig 2f)
 
 df_xrn = pd.read_csv(f'{XRN1}/xrn1_l1_expression.tsv', sep='\t')
 

@@ -87,7 +87,7 @@ for ax, cond, color, title in [
         slope, intercept, r, p, se = stats.linregress(x_f, y_f)
         x_line = np.linspace(xlim_s[0], xlim_s[1], 100)
         y_line = slope * x_line + intercept
-        ax.plot(x_line, y_line, color='black', lw=1.0, zorder=3)
+        ax.plot(x_line, y_line, color='black', lw=LW_DATA_SEC, zorder=3)
 
         n = len(x_f)
         x_mean = x_f.mean()
@@ -112,7 +112,6 @@ for ax, cond, color, title in [
 ax_a1.set_ylabel('Poly(A) length (nt)')
 ax_a2.set_ylabel('')
 ax_a2.tick_params(labelleft=False)
-fig_a.tight_layout()
 save_figure(fig_a, f'{OUTDIR}/figS14a')
 n_hela = len(df_merged[df_merged['cell_line'] == 'HeLa'])
 n_ars = len(df_merged[df_merged['cell_line'] == 'HeLa-Ars'])
@@ -145,7 +144,7 @@ x_pos = np.arange(4)
 lollipop_plot(ax, ['Q1\n(low m6A)', 'Q2', 'Q3', 'Q4\n(high m6A)'], deltas,
               colors=q_cmap_stress_b, horizontal=False, marker_size=50,
               stem_width=2.0, ref_value=0)
-ax.axhline(0, color=C_GREY, lw=0.5, ls='--')
+ax.axhline(0, color=C_GREY, lw=LW_REF, ls='--')
 
 # Delta labels + significance stars above/below each bar
 for i, (d, p) in enumerate(zip(deltas, p_vals_b)):
@@ -188,7 +187,7 @@ print(f"figS14b (Δpoly(A) bar): {[f'{d:.1f}' for d in deltas]}")
 # ═══════════════════════════════════════════
 # Panel (d): Slope chart — Normal→Stress Pearson r by age subgroup
 # ═══════════════════════════════════════════
-fig_c, ax = plt.subplots(figsize=(HALF_WIDTH * 0.95, HALF_WIDTH * 0.65))
+fig_c, ax = plt.subplots(figsize=(HALF_WIDTH, PANEL_HEIGHT))
 panel_label(ax, 'b')
 
 # Extract r and p values from df_strat
@@ -260,7 +259,7 @@ print(f"fig3b (slope chart): Normal→Stress r for {len(group_labels)} subgroups
 # ═══════════════════════════════════════════
 # Panel (a): ECDF poly(A) by m6A quartile — 8 curves
 # ═══════════════════════════════════════════
-fig_d, ax = plt.subplots(figsize=(HALF_WIDTH * 1.2, HALF_WIDTH * 0.85))
+fig_d, ax = plt.subplots(figsize=(HALF_WIDTH, PANEL_HEIGHT))
 panel_label(ax, 'a')
 
 from matplotlib.lines import Line2D
@@ -268,23 +267,23 @@ from matplotlib.lines import Line2D
 q_cmap_normal = ['#B8D4E8', '#7EB1D4', '#4488BA', '#2A5F8F']
 q_cmap_stress = ['#E8B5C5', '#CC7799', '#AA3366', '#771144']
 
-quartile_order = ['Q1', 'Q2', 'Q3', 'Q4']
+quartile_show = [('Q1', 0), ('Q4', 3)]  # only extremes for clarity
 xlim_ecdf = 300
 
-for qi, q in enumerate(quartile_order):
+for q, qi in quartile_show:
     d_n = df_merged[(df_merged['cell_line'] == 'HeLa') &
                      (df_merged['m6a_quartile'] == q)]['polya_length'].dropna().values
     if len(d_n) > 10:
         ecdf_plot(ax, np.clip(d_n, 0, xlim_ecdf), q_cmap_normal[qi],
-                  f'{q} normal (n={len(d_n):,})', lw=1.0, ls='--')
+                  None, lw=LW_DATA_SEC, ls='--')
 
     d_s = df_merged[(df_merged['cell_line'] == 'HeLa-Ars') &
                      (df_merged['m6a_quartile'] == q)]['polya_length'].dropna().values
     if len(d_s) > 10:
         ecdf_plot(ax, np.clip(d_s, 0, xlim_ecdf), q_cmap_stress[qi],
-                  f'{q} stress (n={len(d_s):,})', lw=1.2)
+                  None, lw=LW_DATA)
 
-ax.axvline(30, color='#CCCCCC', lw=0.7, ls=':')
+ax.axvline(30, color='#CCCCCC', lw=LW_REF, ls=':')
 ax.text(32, 0.02, 'Decay zone\n(<30 nt)', fontsize=FS_ANNOT_SMALL, color='#999999', va='bottom')
 
 ax.set_xlim(0, xlim_ecdf)
@@ -293,10 +292,10 @@ ax.set_xlabel('Poly(A) length (nt)')
 ax.set_ylabel('Cumulative fraction')
 
 legend_lines = [
-    Line2D([0], [0], color=q_cmap_stress[0], lw=1.2, label='Q1 (low m6A) arsenite'),
-    Line2D([0], [0], color=q_cmap_stress[3], lw=1.2, label='Q4 (high m6A) arsenite'),
-    Line2D([0], [0], color=q_cmap_normal[0], lw=1.0, ls='--', label='Q1 normal'),
-    Line2D([0], [0], color=q_cmap_normal[3], lw=1.0, ls='--', label='Q4 normal'),
+    Line2D([0], [0], color=q_cmap_stress[0], lw=LW_DATA, label='Q1 (low m6A) arsenite'),
+    Line2D([0], [0], color=q_cmap_stress[3], lw=LW_DATA, label='Q4 (high m6A) arsenite'),
+    Line2D([0], [0], color=q_cmap_normal[0], lw=LW_DATA_SEC, ls='--', label='Q1 normal'),
+    Line2D([0], [0], color=q_cmap_normal[3], lw=LW_DATA_SEC, ls='--', label='Q4 normal'),
 ]
 ax.legend(handles=legend_lines, fontsize=FS_ANNOT_SMALL, loc='lower right', frameon=False)
 
@@ -307,11 +306,53 @@ q4_stress = df_merged[(df_merged['cell_line'] == 'HeLa-Ars') &
 if len(q1_stress) > 10 and len(q4_stress) > 10:
     med_q1 = q1_stress.median()
     med_q4 = q4_stress.median()
-    ax.text(0.03, 0.95, f'Q1 median {med_q1:.0f} nt  •  Q4 median {med_q4:.0f} nt\n'
-                           f'$\\Delta$ = +{med_q4-med_q1:.0f} nt',
-              transform=ax.transAxes, va='top', fontsize=FS_ANNOT, color=C_STRESS)
+    pass  # median/delta annotation removed — conveyed by curves + legend
 
 save_figure(fig_d, f'{OUTDIR}/fig3a')
 print(f"fig3a: {len(df_merged):,} reads across 8 curves")
+
+# ═══════════════════════════════════════════
+# Panel: Per-read scatter — m6A/kb vs poly(A), overlaid Normal + Stress
+# ═══════════════════════════════════════════
+fig_sc, ax = plt.subplots(figsize=(HALF_WIDTH, PANEL_HEIGHT))
+panel_label(ax, 'c')
+
+xlim_sc = (0, 15)
+ylim_sc = (0, 300)
+
+for cond, color, label in [('HeLa', C_NORMAL, 'Normal'), ('HeLa-Ars', C_STRESS, 'Arsenite')]:
+    sub = df_merged[df_merged['cell_line'] == cond].copy()
+    x = sub['m6a_per_kb'].values
+    y = sub['polya_length'].values
+
+    ax.scatter(x, y, s=S_POINT_SMALL, alpha=0.12, color=color, edgecolors='none',
+               rasterized=True, zorder=1)
+
+    mask = np.isfinite(x) & np.isfinite(y) & (x >= 0) & (y >= 0)
+    x_f, y_f = x[mask], y[mask]
+    if len(x_f) > 50:
+        slope, intercept, r, p, se = stats.linregress(x_f, y_f)
+        x_line = np.linspace(xlim_sc[0], xlim_sc[1], 100)
+        y_line = slope * x_line + intercept
+        ax.plot(x_line, y_line, color=color, lw=LW_DATA, zorder=3, label=f'{label} (r={r:.2f})')
+
+        n = len(x_f)
+        x_mean = x_f.mean()
+        ss_x = np.sum((x_f - x_mean)**2)
+        se_fit = np.sqrt(np.sum((y_f - (slope * x_f + intercept))**2) / (n - 2)) * \
+                 np.sqrt(1/n + (x_line - x_mean)**2 / ss_x)
+        from scipy.stats import t as t_dist
+        t_crit = t_dist.ppf(0.975, n - 2)
+        ax.fill_between(x_line, y_line - t_crit * se_fit, y_line + t_crit * se_fit,
+                         alpha=0.15, color=color, lw=0, zorder=2)
+
+ax.set_xlim(xlim_sc)
+ax.set_ylim(ylim_sc)
+ax.set_xlabel('m6A sites per kb')
+ax.set_ylabel('Poly(A) length (nt)')
+ax.legend(fontsize=FS_ANNOT_SMALL, loc='upper left')
+
+save_figure(fig_sc, f'{OUTDIR}/fig2c_scatter')
+print(f"fig2c_scatter saved")
 
 print("\nAll Fig 3 panels saved.")
